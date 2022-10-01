@@ -1,0 +1,49 @@
+﻿<Window x:Class="HOI4test.ProvinceView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HOI4test"
+        mc:Ignorable="d"
+        Title="ProvinceView" Height="500" Width="220">
+    <Grid Margin="0,0,0,0">
+
+        <GridSplitter HorizontalAlignment="Center" Height="11" Margin="0,267,0,0" VerticalAlignment="Top" Width="220"/>
+        <Label Content="State View&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="Province View&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,283,0,0" VerticalAlignment="Top"/>
+        <Label Content="ID" HorizontalAlignment="Left" Margin="24,43,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.807,-1.231"/>
+        <Label Content="Owner" HorizontalAlignment="Left" Margin="24,74,0,0" VerticalAlignment="Top"/>
+        <Label Content="Manpower" HorizontalAlignment="Left" Margin="24,105,0,0" VerticalAlignment="Top"/>
+        <Label Content="Category" HorizontalAlignment="Left" Margin="24,136,0,0" VerticalAlignment="Top"/>
+        <Label Content="Buildings" HorizontalAlignment="Left" Margin="24,167,0,0" VerticalAlignment="Top"/>
+        <Label Content="Resources" HorizontalAlignment="Left" Margin="24,198,0,0" VerticalAlignment="Top"/>
+        <Label Content="Cores" HorizontalAlignment="Left" Margin="29,233,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="Owner" HorizontalAlignment="Left" Margin="100,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82"/>
+        <TextBox x:Name="Manpower" HorizontalAlignment="Left" Margin="100,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82"/>
+        <Label Content="Buildings" HorizontalAlignment="Left" Margin="24,347,0,0" VerticalAlignment="Top"/>
+        <Label  Content="VP" HorizontalAlignment="Left" Margin="24,378,0,0" VerticalAlignment="Top"/>
+        <Label Content="ID" HorizontalAlignment="Left" Margin="24,316,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name ="category" Margin="100,138,19,300">
+            <ComboBoxItem x:Name ="wasteland">wasteland</ComboBoxItem>
+            <ComboBoxItem x:Name ="enclave">enclave</ComboBoxItem>
+            <ComboBoxItem x:Name ="small_island">small_island</ComboBoxItem>
+            <ComboBoxItem x:Name ="tiny_island">tiny_island</ComboBoxItem>
+            <ComboBoxItem x:Name ="pastoral">pastoral</ComboBoxItem>
+            <ComboBoxItem x:Name ="rural">rural</ComboBoxItem>
+            <ComboBoxItem x:Name ="town" >town</ComboBoxItem>
+            <ComboBoxItem x:Name ="large_town" >large_town</ComboBoxItem>
+            <ComboBoxItem x:Name="city">city</ComboBoxItem>
+            <ComboBoxItem x:Name="large_city">large_city</ComboBoxItem>
+            <ComboBoxItem x:Name="metropolis">metropolis</ComboBoxItem>
+            <ComboBoxItem x:Name="megalopolis">megalopolis</ComboBoxItem>
+        </ComboBox>
+        <Button Content="Edit" x:Name="ResourceButton"  HorizontalAlignment="Left" Margin="100,201,0,0" VerticalAlignment="Top" Width="60" Click="GoToResources"/>
+        <Button Content="Edit" x:Name="BuildingButton" HorizontalAlignment="Left" Margin="100,170,0,0" VerticalAlignment="Top" Width="60" Click="GoToBuildings"/>
+        <Label x:Name="StateID" Content="Placeholder" HorizontalAlignment="Left" Margin="100,43,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="ProvinceID" Content="Placeholder" HorizontalAlignment="Left" Margin="100,316,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="Save" Click="SaveThings" Content="Save" HorizontalAlignment="Center" Margin="0,409,0,0" VerticalAlignment="Top" Width="136"/>
+        <TextBox x:Name="VP" HorizontalAlignment="Left" Margin="100,382,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="Cores" HorizontalAlignment="Left" Margin="100,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82"/>
+    </Grid>
+
+</Window>

@@ -1,0 +1,113 @@
+﻿<Window x:Class="HOI4test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HOI4test"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1280">
+
+    <Window.Resources>
+        <Style x:Key="ProvinceStyle" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="0"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StateStyle" TargetType="{x:Type Image}">
+            <Style.Setters>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="0" Color="Gray" Opacity="0.6" BlurRadius="1"/>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="1"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SelectedProvince" TargetType="{x:Type Image}">
+            <Style.Setters>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="1"/>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="1"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="Gray" BorderThickness="4" Grid.ColumnSpan="4" Margin="44,171,44,36" Grid.RowSpan="8">
+            <Grid x:Name="backGrid3"   ClipToBounds="True">
+                <Grid x:Name="backGrid2">
+                    <Grid.RenderTransform>
+                        <MatrixTransform/>
+                    </Grid.RenderTransform>
+                    <Grid x:Name="backGrid1" MouseWheel="Grid_MouseWheel">
+                        <Grid.RenderTransform>
+                            <MatrixTransform/>
+                        </Grid.RenderTransform>
+                        <Canvas x:Name="BackCanvas" AllowDrop="True" DragOver="Canvas_Drop" MouseDown="HandleMouseDown">
+                            <StackPanel x:Name ="MapPanel" MouseMove="HandleDragDrop">
+
+                                <Grid x:Name="grid1" >
+                                    <Grid.RenderTransform>
+                                        <MatrixTransform/>
+                                    </Grid.RenderTransform>
+                                    <Canvas x:Name="map" Height="2047" Width="5631">
+                                    </Canvas>
+
+                                </Grid>
+
+                            </StackPanel>
+                        </Canvas>
+                    </Grid>
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <TextBox x:Name="txtName" Margin="175,39,277,261" />
+        <Button x:Name="btnAdd" Margin="175,10,346,57" Click="GenerateMap">Generate Map</Button>
+        <Button x:Name="exit" Margin="449,10,56,57" Click="Exit" Content="Exit"/>
+        <Button x:Name="save" Margin="315,10,206,57" Click="Save" Content="Save"/>
+        <Grid/>
+
+    </Grid>
+</Window>
