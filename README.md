@@ -20,3 +20,4 @@ Currently, the editor can:
 - add resources to a state
 - add a province to a state, removing it from any other states. All VPs and province buildings are also transferred.
 - export state data to be used in your mod
+- strategic regions cannot yet be edited, but will update whenever a province transfers states.
