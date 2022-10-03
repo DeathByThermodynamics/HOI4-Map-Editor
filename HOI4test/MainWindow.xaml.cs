@@ -35,6 +35,7 @@ namespace HOI4test
         double y_change2;
         ProvinceView provincewindow;
         public States states;
+        public StratRegion stratRegions;
         Dictionary<int,List<string>> stateDict = new Dictionary<int, List<string>>();
         Dictionary<int, UIElement> provinceDict;
         public static Dictionary<string, List<string>> definition;
@@ -56,6 +57,10 @@ namespace HOI4test
             if (opened_map)
             {
                 states.saveStates();
+                // This is ok because exporting strategic regions is much more lightweight.
+                // Eventually, would like states to also always be exported.
+                var exporter = new Exporter();
+                exporter.ExportStratRegions(stratRegions.stratProvinces, stratRegions.stratData);
             }
             
             System.Windows.Application.Current.Shutdown();
@@ -72,7 +77,7 @@ namespace HOI4test
             6: terrain
             7: continent
              */
-            string text = System.IO.File.ReadAllText(starter.programfolder + "/statedata.txt");
+            string text = System.IO.File.ReadAllText(@starter.hoi4folder + "/mapEditor/statedata.txt");
             var newtext = text.Split(":");
             var provincesplit = newtext[1].Split("?");
             
@@ -91,14 +96,14 @@ namespace HOI4test
                 deflist.RemoveAt(0);
                 definition.Add(defsplit[0], deflist);
             }
-            states = new States(starter.programfolder + "/statedatafull.txt");
+            states = new States(@starter.hoi4folder + "/mapEditor/statedatafull.txt");
             stateDict = new Dictionary<int, List<string>>();
             foreach (var state in states.states)
             {
                 var tempProvinces = (string[]) state.Value["provinces"];
                 stateDict.Add(state.Key, tempProvinces.ToList());
             }
-            states.getCountryColours(starter.programfolder + "/countrycolours.txt");
+            states.getCountryColours(@starter.hoi4folder + "/mapEditor/countrycolours.txt");
         }
         
         public void UpdateProvinces(List<string> provinces)
@@ -131,10 +136,12 @@ namespace HOI4test
         }
         private void GenerateMap(object sender, RoutedEventArgs e)
         {
+            stratRegions = new StratRegion();
+            stratRegions.getStratRegions(starter.hoi4folder);
             provincewindow.Show();
             provinceDict = new Dictionary<int, UIElement>();
             GetStateData();
-            Console.WriteLine("lmao");
+            //MessageBox.Show("lmao");
             // Create image.
             txtName.Clear();
             Image newImage = new Image();
@@ -150,7 +157,7 @@ namespace HOI4test
 
             // Draw image to screen.
 
-            string text = System.IO.File.ReadAllText(@starter.programfolder + "/provincepos.txt");
+            string text = System.IO.File.ReadAllText(@starter.hoi4folder + "/mapEditor/provincepos.txt");
             //MessageBox.Show(starter.programfolder + "/provincepos.txt");
             var newtext = text.Split(";");
             var provincesplit = newtext[1].Split("?");
@@ -315,9 +322,7 @@ namespace HOI4test
                             return;
                         }
                         states.transferProvince(selectedState, provinceid, stateid);
-                        //provincewindow.addProvince(provinceid);
-                        // THIS BREAKS THE CODE ^^^^^^^^^^^^^^^^^^^^
-                        // UNCOMMENT FIXES IT BUT MAKES A GIANT STATE AMALGAMATION
+                        stratRegions.transferProvince(provinceid.ToString(), stateDict[stateid][0]);
                     }
                 }
                 stateDict = new Dictionary<int, List<string>>();

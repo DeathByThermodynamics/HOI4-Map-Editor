@@ -25,8 +25,26 @@ namespace HOI4test
             states = new States("C:/Users/alexh/electron/backend/hoi4/statedatafull.txt");
             states.getCountryColours("C:/Users/alexh/electron/backend/hoi4/countrycolours.txt");
         } */
+        public void ExportStratRegions(Dictionary<string, List<string>> provinces, Dictionary<string, List<string>> data)
+        {
+            Directory.CreateDirectory(starter.outputfolder + "/strategicregions");
+            foreach(var i in data.Keys)
+            {
+                for (var k = 0; k < data[i].Count; k++)
+                {
+                    if (data[i][k].Trim().StartsWith("provinces"))
+                    {
+                        data[i].Insert(k + 1, "      " + string.Join(" ", provinces[i]));
+                    }
+                }
+
+                saveFile("strategicregions/" + i + ".txt", data[i]);
+            }
+        }
+        
         public void ExportStateData(Dictionary<int, Dictionary<string, Object>> stateDict)
         {
+            Directory.CreateDirectory(starter.outputfolder + "/states");
             var tab = "    ";
             List<string> nums = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
             foreach (var entry in stateDict.Keys)
@@ -150,7 +168,7 @@ namespace HOI4test
                 //MessageBox.Show("9");
                 returnlist.Add("local_supplies = 0.0");
                 returnlist.Add("}");
-                saveFile(stateDict[entry]["id"].ToString() + ".txt", returnlist);
+                saveFile("states/" + stateDict[entry]["id"].ToString() + ".txt", returnlist);
                 //MessageBox.Show("0");
             }
         }
