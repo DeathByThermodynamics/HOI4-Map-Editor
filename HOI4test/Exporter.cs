@@ -99,7 +99,11 @@ namespace HOI4test
                     var vpdict = (Dictionary<string, string>)stateDict[entry]["vp"];
                     for (var i = 0; i < vpdict.Count; i++)
                     {
-                        returnlist.Add(tab + tab + "victory_points = { " + vpdict.Keys.ElementAt(i) + " " + vpdict.Values.ElementAt(i) + " }");
+                        if (vpdict.Values.ElementAt(i) != "0")
+                        {
+                            returnlist.Add(tab + tab + "victory_points = { " + vpdict.Keys.ElementAt(i) + " " + vpdict.Values.ElementAt(i) + " }");
+
+                        }
                     }
                 }
                 //MessageBox.Show("6");

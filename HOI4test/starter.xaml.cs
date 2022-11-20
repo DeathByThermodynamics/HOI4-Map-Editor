@@ -26,9 +26,9 @@ namespace HOI4test
         // In the new version, all the .txt save data will also be stored
         // in the player directory, under a folder named 'mapEditor'.
         // here, i.e. it would be C:/users/alexh/hoi4example/mapEditor.
-        public static string hoi4folder = "C:/Users/alexh/hoi4example";
+        public static string hoi4folder = "C:/";
         public static string programfolder = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/hoi4";
-        public static string outputfolder = "C:/Users/alexh/hoi4example/statetest";
+        public static string outputfolder = "C:/";
         public starter()
         {
             InitializeComponent();
@@ -58,17 +58,19 @@ namespace HOI4test
         }
         private void LoadFilesAsync()
         {
-            //C:/users/alexh/terralis
             hoi4folder = Inputs.Text;
             ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = "C:/Users/alexh/AppData/Local/Programs/Python/Python39/python.exe";
-            start.Arguments = string.Format(starter.programfolder + "/main.py {0}", hoi4folder);
+            start.FileName = starter.programfolder + "/dist/main/main.exe";
+            start.Arguments = string.Format(" {0}", hoi4folder);
             start.UseShellExecute = false;
             start.CreateNoWindow = true;
             start.RedirectStandardOutput = true;
 
             Process process = new Process();
-            
+            /*
+         * Exe Replacements - done 11/20
+         * 
+         */
             process.StartInfo = start;
             process.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
             {
