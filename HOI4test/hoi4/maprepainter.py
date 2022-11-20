@@ -19,7 +19,7 @@ colour = sys.argv[2]
 print("done")
 
 def repaintProvinces(provincelist, colour):
-    directory = 'C:/Users/alexh/hoi4example'
+    directory = 'C:/Users/alexh/terralis'
     for i in provincelist:
         if i != "":
             provinceid = int(i)

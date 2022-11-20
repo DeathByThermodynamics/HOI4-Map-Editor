@@ -76,7 +76,15 @@ namespace HOI4test
             string text = System.IO.File.ReadAllText(@starter.hoi4folder + "/common/buildings/00_buildings.txt");
             var splittext = text.Split("{");
             var icchan2 = splittext[0].Trim(' ').Trim('=');
-            var coastal = MainWindow.definition[province.ToString()][4].ToString();
+            string coastal;
+            if (MainWindow.definition.ContainsKey(province.ToString()))
+            {
+               coastal = MainWindow.definition[province.ToString()][4].ToString();
+            } else
+            {
+                coastal = "false";
+            }
+                    
             //MessageBox.Show(coastal);
             if (icchan2.Trim(' ') == "buildings")
             {
@@ -147,7 +155,7 @@ namespace HOI4test
                 old_owner = (string)state["owner"];
             }
 
-            state["owner"] = Owner.Text;
+            state["owner"] = ProvOwner.Text;
             state["manpower"] = Manpower.Text;
             var corelist = Cores.Text.Trim(' ').Split(',');
             for (var i = 0; i < corelist.Length; i++)
@@ -201,7 +209,17 @@ namespace HOI4test
                 }
                 else
                 {
-                    state["buildings"] = buildingwindow.getBuildings(province.ToString());
+                    var tempstatebuildings = buildingwindow.getBuildings(province.ToString());
+                    var tempstate = (Dictionary<string, object>)state["buildings"];
+                    for (var i = 0; i < tempstate.Keys.Count; i++)
+                    {
+                        var key = tempstate.Keys.ElementAt(i);
+                        if (!tempstatebuildings.ContainsKey(key))
+                        {
+                            tempstatebuildings.Add(key, tempstate[key]);
+                        }
+                    }
+                    state["buildings"] = tempstatebuildings;
 
                 }
                 //MessageBox.Show(state["buildings"].GetType().ToString());
@@ -212,10 +230,18 @@ namespace HOI4test
 
         public void sentToMain(string old_owner)
         {
-            main.states.changeState(state, old_owner);
+            int newstateprov = 0;
+            if (main.states.states.ContainsKey(int.Parse(state["id"].ToString()))) {
+                main.states.changeState(state, old_owner);
+            } else
+            {
+                main.states.addState(state);
+                newstateprov = province;
+            }
+                
             
             var bruh = (string[]) state["provinces"];
-            main.UpdateProvinces(bruh.ToList());
+            main.UpdateProvinces(bruh.ToList(), newstateprov);
             
             main.states.saveStates();
         }
@@ -237,14 +263,20 @@ namespace HOI4test
             
             if (stateinfo.ContainsKey("owner"))
             {
-                Owner.Text = stateinfo["owner"].ToString();
+                ProvOwner.Text = stateinfo["owner"].ToString();
             } else
             {
-                Owner.Text = "";
+                ProvOwner.Text = "";
             }
             
-            Manpower.Text = stateinfo["manpower"].ToString();
-
+            if (stateinfo.ContainsKey("manpower"))
+            {
+                Manpower.Text = stateinfo["manpower"].ToString();
+            } else
+            {
+                Manpower.Text = "0";
+            }
+            
             if (stateinfo.ContainsKey("cores"))
             {
                 var corelist = (string[])stateinfo["cores"];
@@ -354,8 +386,16 @@ namespace HOI4test
 
                 }
             }
-           
-            
+
+            else
+            {
+               foreach (var i in resources)
+                    {
+                        resourcewindow.resourceboxes[i].Text = "0";
+                    }
+            }
+
+            resourcewindow.Owner = this;
             resourcewindow.Show();
             
         }
@@ -387,7 +427,32 @@ namespace HOI4test
                     }
                 }
             }
+
+            else
+            {
+                foreach (var i in buildings)
+                {
+                    buildingwindow.buildingboxes[i].Text = "0";
+                }
+                foreach (var i in provinceBuildings)
+                {
+                    buildingwindow.provinceboxes[i].Text = "0";
+                }
+            }
+            buildingwindow.Owner = this;
             buildingwindow.Show();
+        }
+
+        private void CreateNewState(object sender, RoutedEventArgs e)
+        {
+            var stateinfo = new Dictionary<string, object>();
+            stateinfo.Add("id", main.states.getStates().Count + 1);
+            stateinfo.Add("provinces", new string[] { province.ToString() });
+            stateinfo.Add("owner", ProvOwner.Text);
+            stateinfo.Add("manpower", "0");
+            state = stateinfo;
+            updateWindow(stateinfo, province);
+            sentToMain("NONE");
         }
     }
 }

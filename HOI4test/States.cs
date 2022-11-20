@@ -35,7 +35,7 @@ using HOI4test;
 public class States
 {
     public Dictionary<int, Dictionary<string, Object>> states;
-    Dictionary<string, List<int>> countryColour;
+    public Dictionary<string, List<int>> countryColour;
 
     public void getCountryColours(string directory)
     {
@@ -69,7 +69,55 @@ public class States
             RepaintProvinces(newlist, colourstring);
         }
     }
-    
+
+    public void addState(Dictionary<string, Object> stateinfo)
+    {
+        var provinceid = ((string[])stateinfo["provinces"])[0];
+        int oldstate = 0;
+        foreach (var state in states.Values)
+        {
+            if (((string[])state["provinces"]).Contains(provinceid))
+            {
+                oldstate = int.Parse(state["id"].ToString());
+            }
+        }
+        var oldprovs = ((string[])states[oldstate]["provinces"]).ToList();
+        oldprovs.Remove(provinceid.ToString());
+        states[oldstate]["provinces"] = oldprovs.ToArray();
+        states.Add(int.Parse(stateinfo["id"].ToString()), stateinfo);
+        var selectedstate = int.Parse(stateinfo["id"].ToString());
+
+        if (states[oldstate].ContainsKey("buildings"))
+        {
+            var oldbuildings = (Dictionary<string, Object>)states[oldstate]["buildings"];
+            if (oldbuildings.ContainsKey(provinceid.ToString()))
+            {
+                var provinceinfo = oldbuildings[provinceid.ToString()];
+                if (!states[selectedstate].ContainsKey("buildings"))
+                {
+                    states[selectedstate].Add("buildings", new Dictionary<string, Object>());
+                }
+                var newbuildings = (Dictionary<string, Object>)states[selectedstate]["buildings"];
+                newbuildings.Add(provinceid.ToString(), provinceinfo);
+            }
+        }
+
+        if (states[oldstate].ContainsKey("vp"))
+        {
+            var oldvps = (Dictionary<string, string>)states[oldstate]["vp"];
+            if (oldvps.ContainsKey(provinceid.ToString()))
+            {
+                var provinceinfo = oldvps[provinceid.ToString()];
+                if (!states[selectedstate].ContainsKey("vp"))
+                {
+                    states[selectedstate].Add("vp", new Dictionary<string, string>());
+                }
+                var newvps = (Dictionary<string, string>)states[selectedstate]["vp"];
+                newvps.Add(provinceid.ToString(), provinceinfo);
+            }
+        }
+    }
+
     public void RepaintProvinces(List<string> provinces, string colour)
     {
         ProcessStartInfo start = new ProcessStartInfo();
@@ -81,9 +129,13 @@ public class States
             }
             
         }
-        start.FileName = "C:/Users/alexh/AppData/Local/Programs/Python/Python39/python.exe";
+        /*
+         * Exe replacements - done 11/20
+         * 
+         */
+        start.FileName = starter.programfolder + "/dist/maprepainter/maprepainter.exe";
         //MessageBox.Show(string.Format("C:/Users/alexh/electron/backend/hoi4/maprepainter.py {0} {1}", provincestring, colour));
-        start.Arguments = string.Format(starter.programfolder + "/maprepainter.py {0} {1}", provincestring, colour);
+        start.Arguments = string.Format(" {0} {1}", provincestring, colour);
         start.UseShellExecute = false;
         start.CreateNoWindow = true;
         start.RedirectStandardOutput = true;
@@ -139,16 +191,16 @@ public class States
 
         if (states[oldstate].ContainsKey("vp"))
         {
-            var oldbuildings = (Dictionary<string, string>)states[oldstate]["vp"];
-            if (oldbuildings.ContainsKey(provinceid.ToString()))
+            var oldvps = (Dictionary<string, string>)states[oldstate]["vp"];
+            if (oldvps.ContainsKey(provinceid.ToString()))
             {
-                var provinceinfo = oldbuildings[provinceid.ToString()];
+                var provinceinfo = oldvps[provinceid.ToString()];
                 if (!states[selectedstate].ContainsKey("vp"))
                 {
                     states[selectedstate].Add("vp", new Dictionary<string, string>());
                 }
-                var newbuildings = (Dictionary<string, string>)states[selectedstate]["vp"];
-                newbuildings.Add(provinceid.ToString(), provinceinfo);
+                var newvps = (Dictionary<string, string>)states[selectedstate]["vp"];
+                newvps.Add(provinceid.ToString(), provinceinfo);
             }
         }
 
@@ -159,8 +211,8 @@ public class States
         
         var next = Saver.saveData(states);
         string[] returnstring = next.ToArray();
-        File.Delete(@starter.programfolder + "/statedatafull.txt");
-        await File.WriteAllLinesAsync(@starter.programfolder + "/statedatafull.txt", returnstring);
+        File.Delete(@starter.hoi4folder + "/mapEditor/statedatafull.txt");
+        await File.WriteAllLinesAsync(@starter.hoi4folder + "/mapEditor/statedatafull.txt", returnstring);
     }
     public States(string directory)
     {

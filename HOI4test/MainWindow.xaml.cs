@@ -15,6 +15,9 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
+using Image = System.Windows.Controls.Image;
+using Application = System.Windows.Application;
 
 namespace HOI4test
 {
@@ -45,6 +48,7 @@ namespace HOI4test
         {
             InitializeComponent();
             provincewindow = new ProvinceView(this);
+            
             x_change1 = +((x_lim - x_lim * scale) / 2);
             y_change1 = +((y_lim - y_lim * scale) / 2);
             x_change2 = x_change1;
@@ -106,7 +110,7 @@ namespace HOI4test
             states.getCountryColours(@starter.hoi4folder + "/mapEditor/countrycolours.txt");
         }
         
-        public void UpdateProvinces(List<string> provinces)
+        public void UpdateProvinces(List<string> provinces, int newstateprov)
         {
             foreach (var province in provinces)
             {
@@ -118,7 +122,33 @@ namespace HOI4test
                 }
 
             }
-            
+            stateDict = new Dictionary<int, List<string>>();
+            foreach (var state in states.states)
+            {
+                var tempProvinces = (string[])state.Value["provinces"];
+                stateDict.Add(state.Key, tempProvinces.ToList());
+            }
+
+            if (newstateprov > 0)
+            {
+                var tempImage1 = (Image)provinceDict[newstateprov];
+                tempImage1.Style = (Style)FindResource("SelectedProvince");
+                
+                for (var j = 0; j < stateDict[selectedState].Count; j++) 
+                {
+                        if (stateDict[selectedState][j] != "")
+                        {
+                            var id = int.Parse(stateDict[selectedState][j].Trim());
+                            var tempImage = (Image)provinceDict[id];
+                            tempImage.Style = (Style)FindResource("ProvinceStyle");
+                        }
+                 }
+                selectedState = states.states.Count;
+                provincewindow.updateWindow(states.getStates()[selectedState], newstateprov);
+
+            }
+
+
         }
 
         public BitmapImage LoadBitmapImage(string fileName)
@@ -138,6 +168,7 @@ namespace HOI4test
         {
             stratRegions = new StratRegion();
             stratRegions.getStratRegions(starter.hoi4folder);
+            provincewindow.Owner = this;
             provincewindow.Show();
             provinceDict = new Dictionary<int, UIElement>();
             GetStateData();
@@ -192,6 +223,7 @@ namespace HOI4test
                 tempImage.Style = (Style)FindResource("ProvinceStyle");
                 tempImage.Opacity = 0.7;
                 tempImage.MouseLeftButtonDown += new MouseButtonEventHandler(HandleClickProvince);
+                RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
                 //tempImage.Name = provinceid;
                 map.Children.Add(tempImage);
                 provinceDict.Add(int.Parse(provinceid), tempImage);
@@ -323,6 +355,11 @@ namespace HOI4test
                         }
                         states.transferProvince(selectedState, provinceid, stateid);
                         stratRegions.transferProvince(provinceid.ToString(), stateDict[stateid][0]);
+                        var templist = new List<string>();
+                        templist.Add(provinceid.ToString());
+                        var colour = states.countryColour[(string)states.getStates()[stateid]["owner"]];
+                        var colourstring = colour[0].ToString() + "," + colour[1].ToString() + "," + colour[2].ToString();
+                        states.RepaintProvinces(templist, colourstring);
                     }
                 }
                 stateDict = new Dictionary<int, List<string>>();

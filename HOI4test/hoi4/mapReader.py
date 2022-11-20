@@ -1,5 +1,6 @@
 import os
 import pprint
+import sys
 
 
 nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
@@ -69,24 +70,24 @@ def getStates(directory, stateDictionary=None):
                     while not line.startswith("}"):
                         if line.startswith("buildings") and stateInfo["buildings"] == {}:
                             buildingdict = {}
-                            line = f.readline().strip()
+                            line = killcomments(f.readline())
                             while not line.startswith("}"):
                                 if line != "" and not line.startswith("#"):
                                     provdict = {}
                                     if line[0] in nums:
-                                        line1 = f.readline().strip()
+                                        line1 = killcomments(f.readline())
                                         while not line1.startswith("}"):
                                             if line1 != "" and line1 != "{":
                                                 provdict[line1.split("=")[0].strip()] = int(line1.split("=")[1].split("#")[0])
-                                            line1 = f.readline().strip()
+                                            line1 = killcomments(f.readline())
                                         buildingdict[parseequalsbefore(line)] = provdict
                                         line = line1
                                     else:
                                         buildingdict[line.split("=")[0].strip()] = int(line.split("=")[1].split("#")[0])
-                                line = f.readline().strip()
+                                line = killcomments(f.readline())
                             stateInfo["buildings"] = buildingdict
                         if line.startswith("owner") and "owner" not in stateInfo.keys():
-                            stateInfo["owner"] = parseequalsafter(line);
+                            stateInfo["owner"] = parseequalsafter(line)
                         if line.startswith("victory_points"):
                             if parseequalsafter(line) != '{':
                                 if "vp" not in stateInfo.keys():
@@ -96,7 +97,7 @@ def getStates(directory, stateDictionary=None):
                                     stateInfo["vp"] += [(parseequalsafter(line).split(" ")[1],
                                                          parseequalsafter(line).split(" ")[2])]
                             else:
-                                line = f.readline().strip()
+                                line = killcomments(f.readline())
                                 if "vp" not in stateInfo.keys():
                                     stateInfo["vp"] = [(line.split(" ")[0],
                                                         line.split(" ")[1])]
@@ -110,7 +111,7 @@ def getStates(directory, stateDictionary=None):
                                 stateInfo["cores"] = [parseequalsafter(line)]
                             else:
                                 stateInfo["cores"] += [parseequalsafter(line)]
-                        line = f.readline().strip()
+                        line = killcomments(f.readline())
 
                 elif line.startswith("state_category"):
                     stateInfo["category"] = line.split("=")[1].strip()
@@ -118,12 +119,12 @@ def getStates(directory, stateDictionary=None):
                     temp = line
                 elif line.startswith("resources"):
                     stateInfo["resources"] = {}
-                    line = f.readline().strip()
+                    line = killcomments(f.readline())
                     while not line.startswith("}") and not line == "":
                         if not line.startswith("#"):
                             adder = line.split("=")
                             stateInfo["resources"][adder[0].strip()] = adder[1].strip().split(" ")[0].strip()
-                        line = f.readline().strip()
+                        line = killcomments(f.readline())
 
             stateDictionary[int(parseequalsafter(temp))] = stateInfo
             f.seek(0)
@@ -137,6 +138,11 @@ def parseequalsafter(string):
 def parseequalsbefore(string):
     return string.split("=")[0].split("#")[0].strip()
 
+def killcomments(string):
+    if "#" in string:
+        return string.split("#")[0].strip()
+    else:
+        return string.strip()
 
 def provinceparser(line):
     if line.endswith("{"):

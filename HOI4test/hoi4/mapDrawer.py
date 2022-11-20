@@ -4,6 +4,8 @@ from PIL import Image
 import mapReader
 import province
 import os
+import sys
+import main
 
 def getProvToCountry(stateDict):
     returnDict = {}
@@ -131,7 +133,8 @@ def drawPoliticalProvinces(indir, outdir, width, countryDict, stateDict, provDic
         percent = int(((i * width) / total) * 100)
         if percent > percent1:
             percent1 = percent
-            print(percent)
+            main.communicator(str(percent) + "% done map drawing")
+            sys.stdout.flush()
 
     pil_img = Image.fromarray(new_img)
     pil_img.save(outdir)
@@ -147,9 +150,9 @@ def saveAllProvinces(indir, outdir, width, countryDict, stateDict, provDict, rev
     width, height = raw_img.size
     new_img = np.array(Image.new('RGBA', (width, height), (255, 255, 255, 0)))
     #provcountrydict = getProvToCountry(stateDict)
-    print(height)
-    print(width)
-    print(img.shape)
+    #print(height)
+    #print(width)
+    #print(img.shape)
     total = height * width
     percent1 = 0
 
@@ -176,24 +179,27 @@ def saveAllProvinces(indir, outdir, width, countryDict, stateDict, provDict, rev
         percent = int(((i * width) / total) * 100)
         if percent > percent1:
             percent1 = percent
-            print(percent)
+            main.communicator(str(percent) + "% done map drawing")
     accum = 0
+    main.communicator("Done.")
     total = len(pixelmap.keys())
     provtocountrycolour = getProvToCountryColour(countryDict, stateDict)
+    if not os.path.isdir(outdir + "/provinces"):
+        os.mkdir(outdir + "/provinces")
     for i in pixelmap:
         accum += 1
         width, height = province.calcsize(pixelmap[i])
         #print(pixelmap[i])
-        #os.mkdir(outdir + "/provinces")
+
 
         if i in provtocountrycolour:
             province.getindividualbmp(i, provtocountrycolour[i], pixelmap[i], outdir + "/provinces", width + 1, height + 1)
 
         else:
             province.getindividualbmp(i, revprovDict[i], pixelmap[i], outdir+"/provinces", width+1, height+1)
-        print("Finished " + str(accum) + "/" + str(total))
+        main.communicator("Finished " + str(accum) + "/" + str(total))
     pil_img = Image.fromarray(new_img)
-    pil_img.save(outdir+"/provinces/borders.png")
+    pil_img.save(outdir+"/provinces/borders.bmp")
     return pixelmap
 
 
@@ -207,10 +213,10 @@ def getProvincePos(pixelmap):
     return accum
 
 
-def saveProvinceString(string):
-    if os.path.isfile('provincepos.txt'):
-        os.remove('provincepos.txt')
-    with open("provincepos.txt", 'w') as f:
+def saveProvinceString(dir, string):
+    if os.path.isfile(dir + 'provincepos.txt'):
+        os.remove(dir + 'provincepos.txt')
+    with open(dir + "provincepos.txt", 'w') as f:
         f.write(string)
 
 
@@ -227,5 +233,75 @@ def redrawprovince(directory, id, colour):
     pil_img.save(directory + "/provinces/" + str(id) + ".png")
 
 
+def saveAllProvinces2(indir, outdir, width, countryDict, stateDict, provDict, revprovDict):
+    raw_img = Image.open(indir)
+    img = np.array(raw_img)
+    basewidth = width
+    wpercent = (basewidth / float(raw_img.size[0]))
+    hsize = int((float(raw_img.size[1]) * float(wpercent)))
+    raw_img = raw_img.resize((basewidth, hsize), Image.ANTIALIAS)
+    width, height = raw_img.size
+    new_img = np.array(Image.new('RGBA', (width, height), (255, 255, 255, 0)))
+    overlayborders = np.array(Image.new('RGBA', (width, height), (255, 255, 255, 0)))
+    #provcountrydict = getProvToCountry(stateDict)
+    #print(height)
+    #print(width)
+    #print(img.shape)
+    total = height * width
+    percent1 = 0
+    provtocountrycolour = getProvToCountryColour(countryDict, stateDict)
+    pixelmap = {}
+    for i in range(height):
+        for j in range(width):
+            new_i = int(i / wpercent)
+            new_j = int(j / wpercent)
+            # print(tuple(pixel_val))
+            pixel_val = img[new_i, new_j]
+            provid = int(provDict[tuple(pixel_val)])
+            if tuple(img[new_i - 1, new_j]) != tuple(img[new_i + 1, new_j]) or \
+                    tuple(img[new_i, new_j - 1]) != tuple(img[new_i, new_j + 1]):
+                # print(tuple(img[i - 1, j]))
+                # print(tuple(img[i - 1, j - 1]))
+                # print(tuple(img[i, j - 1]))
+                # print("my tuple:" + str(tuple(img[i, j])))
+                new_pixel = (1, 1, 1)
+                new_img[i, j] = (new_pixel[0], new_pixel[1], new_pixel[2], 255)
+                overlayborders[i, j] = (new_pixel[0], new_pixel[1], new_pixel[2], 255)
+            else:
+                try:
+                    new_img[i, j] = (provtocountrycolour[provid][0], provtocountrycolour[provid][1],
+                                             provtocountrycolour[provid][2], 255)
+                except:
+                    new_img[i, j] = (revprovDict[provid][0], revprovDict[provid][1], revprovDict[provid][2], 125)
+            if provid not in pixelmap:
+                pixelmap[provid] = [(i, j)]
+            else:
+                pixelmap[provid].append((i, j))
+
+        percent = int(((i * width) / total) * 100)
+        if percent > percent1:
+            percent1 = percent
+            main.communicator(str(percent) + "% done map drawing")
+    accum = 0
+    main.communicator("Done.")
+    total = len(pixelmap.keys())
+
+    if not os.path.isdir(outdir + "/provinces"):
+        os.mkdir(outdir + "/provinces")
+    for i in pixelmap:
+        accum += 1
+        width, height = province.calcsize(pixelmap[i])
+        #print(pixelmap[i])
 
 
+        if i in provtocountrycolour:
+            province.getindividualbmp(i, provtocountrycolour[i], pixelmap[i], outdir + "/provinces", width + 1, height + 1)
+
+        else:
+            province.getindividualbmp(i, revprovDict[i], pixelmap[i], outdir+"/provinces", width+1, height+1)
+        main.communicator("Finished " + str(accum) + "/" + str(total))
+    pil_img = Image.fromarray(new_img)
+    pil_img.save(outdir+"/provinces/borders.bmp")
+    border_img = Image.fromarray(overlayborders)
+    border_img.save(outdir+"/provinces/borders2.bmp")
+    return pixelmap
