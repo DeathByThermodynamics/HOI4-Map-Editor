@@ -1,13 +1,31 @@
 # HOI4 Map Editor
 ## Introduction
 
-A map editor for modding Hearts of Iron IV. 
+A map editor for modding Hearts of Iron IV.
 Currently, the application is (to-be) built in C# while the setup and file retrieval is handled by Python.
 
 This project is made to make modding Hearts of Iron IV more accessible, as well as increasing the efficiency of modding for experienced users. The current nudger tool built-in to Hearts of Iron IV requires individual file editing and game reloading to see the effects of map editing, while this application strives to achieve the same thing in real time.
 
-Currently working on bridging the two. The app can be run, but the current process is complicated and requires installations of Python.
+Currently working on bridging the two. The app can be run from the build in the zip file found in /hoi4test/hoitest3.zip.
 A build will be released once all planned features of the first stage are completed.
+
+## Starting the Program
+To run the program, you will need some installation of HOI4 (in order for the program to read the relevant data). This can be vanilla files or files from a mod installation (usually total overhauls). 
+
+![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/loadingcaption1.jpg)
+
+Here, `hoi4example` is my chosen installation folder. Currently, the program needs:
+- the folders in `common`, mostly for the country ids and colour files
+- `map`, for constructing the map to be displayed
+- `history`, for building and state data
+
+The code will create a `provinces` folder in the mod installation folder, but otherwise will not touch the input folder!
+
+If the starter window does not move past `Initializing Map Load` after ~10 seconds, you may have the wrong folder chosen. As reference, the loader completes loading the vanilla map after ~2-3 minutes - this will be optimized in future builds.
+
+![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/preview2.jpg)
+
+After it finishes, you `start` and then `generate map` in order to render the map with the editor.
 
 ## Current GUI
 ![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/hoi4editorpreview.png)
