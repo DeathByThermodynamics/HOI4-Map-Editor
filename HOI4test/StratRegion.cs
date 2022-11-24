@@ -68,18 +68,23 @@ namespace HOI4test
                     // Look into improving this in the future.
                     
                     var newline = line.Trim();
-                    if (nums.Contains(newline[0].ToString()))
+                    if (newline != "")
                     {
-                        provinces.AddRange(newline.Split(' '));
-                    } else
-                    {
-                        data.Add(line);
-                        if (newline.StartsWith("id"))
+                        if (nums.Contains(newline[0].ToString()))
                         {
-                            regionid = newline.Split('=')[1].Trim();
+                            provinces.AddRange(newline.Split(' '));
+                        }
+                        else
+                        {
+                            data.Add(line);
+                            if (newline.StartsWith("id"))
+                            {
+                                regionid = newline.Split('=')[1].Trim();
 
+                            }
                         }
                     }
+                        
 
                 }
 

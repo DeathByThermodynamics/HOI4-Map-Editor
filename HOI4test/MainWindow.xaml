@@ -17,6 +17,9 @@
                         </Setter.Value>
                     </Setter>
                 </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
 
@@ -27,6 +30,7 @@
                         <DropShadowEffect ShadowDepth="0" Color="Gray" Opacity="0.6" BlurRadius="1"/>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="Opacity" Value="0"/>
             </Style.Setters>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
@@ -106,7 +110,7 @@
         <TextBox x:Name="txtName" Margin="175,39,277,261" />
         <Button x:Name="btnAdd" Margin="175,10,346,57" Click="GenerateMap">Generate Map</Button>
         <Button x:Name="exit" Margin="449,10,56,57" Click="Exit" Content="Exit"/>
-        <Button x:Name="save" Margin="315,10,206,57" Click="Save" Content="Save"/>
+        <Button x:Name="save" Margin="315,10,206,57" Click="Save" Content="Export"/>
         <Grid/>
 
     </Grid>
