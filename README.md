@@ -4,7 +4,7 @@
 A map editor for modding Hearts of Iron IV.
 Currently, the application is (to-be) built in C# while the setup and file retrieval is handled by Python.
 
-This project is made to make modding Hearts of Iron IV more accessible, as well as increasing the efficiency of modding for experienced users. The current nudger tool built-in to Hearts of Iron IV requires individual file editing and game reloading to see the effects of map editing, while this application strives to achieve the same thing in real time.
+This project is made to make modding Hearts of Iron IV more accessible, as well as increasing the efficiency of modding for experienced users. The current nudger tool built-in to Hearts of Iron IV requires individual file editing and game reloading to see the effects of map editing, while this application strives to achieve the same thing in real time. I've always been very annoyed with the efficiency of modding in-game (especially with map overhaul mods) and this is my solution to it.
 
 This project was built with MapGen (a wonderful map generation tool!) in mind, and files from MapGen can be directly used in this application.
 
