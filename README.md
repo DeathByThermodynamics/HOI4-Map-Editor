@@ -29,9 +29,10 @@ If the starter window does not move past `Initializing Map Load` after ~10 secon
 
 ![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/preview2.jpg)
 
-After it finishes, you `start` and then `generate map` in order to render the map with the editor.
+After it finishes, you `start` and then `generate map` in order to render the map with the editor. I plan on creating a separate window for generating the map, so be aware that for now, clicking generate map again after the map has loading will crash the application.
 
-## Current GUI
+## Current Functions
+# GUI and Functions
 ![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/hoi4editorpreview.png)
 
 Currently, the editor can:
@@ -43,3 +44,11 @@ Currently, the editor can:
 - add a province to a state, removing it from any other states. All VPs and province buildings are also transferred.
 - export state data to be used in your mod
 - strategic regions cannot yet be edited, but will update whenever a province transfers states.
+
+# Saving
+
+Every time 'save' is clicked in the province view window, a plain file is generated which saves the state of the map in the editor, in order to reduce the amount of times that one might need to export or load. The map state is also saved when shift+click is used to transfer provinces. This save state is stored within a folder in your input folder (likely `MapEditor`) and thus you can load different states just by specifying the input folder.
+
+# Exporting
+
+Clicking the Export button will export the strategic regions and states of your mod into the output folder. As a fair warning, currently the files will just be named their IDs. These can be directly moved into a mod folder and should not cause map errors (other than the change in buildings error which can be fixed in nudge by validating). 
