@@ -6,7 +6,9 @@ Currently, the application is (to-be) built in C# while the setup and file retri
 
 This project is made to make modding Hearts of Iron IV more accessible, as well as increasing the efficiency of modding for experienced users. The current nudger tool built-in to Hearts of Iron IV requires individual file editing and game reloading to see the effects of map editing, while this application strives to achieve the same thing in real time.
 
-Currently working on bridging the two. The app can be run from the build in the zip file found in /hoi4test/hoitest3.zip.
+This project was built with MapGen (a wonderful map generation tool!) in mind, and files from MapGen can be directly used in this application.
+
+The app can be run from the build in the zip file found in /hoi4test/hoitest3.zip.
 A build will be released once all planned features of the first stage are completed.
 
 ## Starting the Program
@@ -20,6 +22,8 @@ Here, `hoi4example` is my chosen installation folder. Currently, the program nee
 - `history`, for building and state data
 
 The code will create a `provinces` folder in the mod installation folder, but otherwise will not touch the input folder!
+
+Important: `common` (and especially country ids) are needed for the application to function properly - if there are no tags, you won't be able to set the owner of a state.
 
 If the starter window does not move past `Initializing Map Load` after ~10 seconds, you may have the wrong folder chosen. As reference, the loader completes loading the vanilla map after ~2-3 minutes - this will be optimized in future builds.
 
