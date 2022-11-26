@@ -52,7 +52,7 @@ public class States
         }
     }
     
-    public void changeState(Dictionary<string, Object> stateinfo, string old_owner)
+    public void changeState(Dictionary<string, Object> stateinfo, string old_owner, MainWindow main)
     {
 
         var owner = states[int.Parse(stateinfo["id"].ToString())]["owner"];
@@ -66,7 +66,7 @@ public class States
             //MessageBox.Show("lmao");
             var thiw = (string[]) states[int.Parse(stateinfo["id"].ToString())]["provinces"];
             var newlist = thiw.ToList<string>();
-            RepaintProvinces(newlist, colourstring);
+            RepaintProvinces(newlist, colourstring, main);
         }
     }
 
@@ -118,8 +118,21 @@ public class States
         }
     }
 
-    public void RepaintProvinces(List<string> provinces, string colour)
+    public void RepaintProvinces(List<string> provinces, string colour, MainWindow main)
     {
+        for (var i = 0; i < provinces.Count; i++)
+        {
+            if (!main.changedprovinces.Contains(provinces[i]))
+            {
+                main.changedprovinces.Add(provinces[i]);
+                main.changedcolours.Add(colour);
+            } else
+            {
+                int index = main.changedprovinces.IndexOf(provinces[i]);
+                main.changedcolours[index] = colour;
+            }
+        }
+        
         ProcessStartInfo start = new ProcessStartInfo();
         string provincestring = "";
         foreach (var provincenum in provinces) {
@@ -135,7 +148,8 @@ public class States
          */
         start.FileName = starter.programfolder + "/dist/maprepainter/maprepainter.exe";
         //MessageBox.Show(string.Format("C:/Users/alexh/electron/backend/hoi4/maprepainter.py {0} {1}", provincestring, colour));
-        start.Arguments = string.Format(" {0} {1}", provincestring, colour);
+        var directory = starter.hoi4folder;
+        start.Arguments = string.Format(" {0} {1} {2} temp", provincestring, colour, directory);
         start.UseShellExecute = false;
         start.CreateNoWindow = true;
         start.RedirectStandardOutput = true;
@@ -160,7 +174,7 @@ public class States
             MessageBox.Show(e.ToString());
         }
 
-        
+        main.AddtoMap(provinces);
 
     }
 
@@ -186,6 +200,7 @@ public class States
                 }
                 var newbuildings = (Dictionary<string, Object>)states[selectedstate]["buildings"];
                 newbuildings.Add(provinceid.ToString(), provinceinfo);
+                oldbuildings.Remove(provinceid.ToString());
             }
         }
 
@@ -201,6 +216,7 @@ public class States
                 }
                 var newvps = (Dictionary<string, string>)states[selectedstate]["vp"];
                 newvps.Add(provinceid.ToString(), provinceinfo);
+                oldvps.Remove(provinceid.ToString());
             }
         }
 

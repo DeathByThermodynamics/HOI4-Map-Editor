@@ -18,6 +18,7 @@ using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using Image = System.Windows.Controls.Image;
 using Application = System.Windows.Application;
+using Color = System.Windows.Media.Color;
 
 namespace HOI4test
 {
@@ -40,9 +41,15 @@ namespace HOI4test
         public StratRegion stratRegions;
         Dictionary<int,List<string>> stateDict = new Dictionary<int, List<string>>();
         Dictionary<int, UIElement> provinceDict;
+        Dictionary<int, UIElement> tempProvDict;
         public static Dictionary<string, List<string>> definition;
         int selectedState = 0;
         bool opened_map = false;
+        Image map_background;
+        public List<string> changedprovinces;
+        public List<string> changedcolours;
+        bool mapProcess = false;
+        int num_provinces = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -53,6 +60,9 @@ namespace HOI4test
             x_change2 = x_change1;
             y_change2 = y_change1;
             definition = new Dictionary<string, List<string>>();
+            changedprovinces = new List<string>();
+            changedcolours = new List<string>();
+            tempProvDict = new Dictionary<int, UIElement>();
         }
 
         public void Exit(object sender, RoutedEventArgs e)
@@ -108,19 +118,26 @@ namespace HOI4test
             }
             states.getCountryColours(@starter.hoi4folder + "/mapEditor/countrycolours.txt");
         }
+
+        public void ReloadMap()
+        {
+            map_background.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/borders.png");
+        }
         
         public void UpdateProvinces(List<string> provinces, int newstateprov)
         {
+            /*
             foreach (var province in provinces)
             {
                 if (province != "")
                 {
                     var newImage = (Image)provinceDict[int.Parse(province.ToString())];
-                    newImage.Source = LoadBitmapImage(starter.hoi4folder + "/provinces/" + province + ".png");
+                    newImage.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/" + province + ".png");
                     //MessageBox.Show(province.ToString());
                 }
 
-            }
+            } */
+            // ReloadMap();
             stateDict = new Dictionary<int, List<string>>();
             foreach (var state in states.states)
             {
@@ -163,6 +180,47 @@ namespace HOI4test
                 return bitmapImage;
             }
         }
+
+        public void AddtoMap(List<string> provinces)
+        {
+            string text = System.IO.File.ReadAllText(@starter.hoi4folder + "/mapEditor/provincepos.txt");
+            var newtext = text.Split(";");
+            var provincesplit = newtext[1].Split("?");
+
+            for (var i = 0; i < int.Parse(newtext[0]); i++)
+            {
+                var provincedata = provincesplit[i].Split(":");
+                var provinceid = provincedata[0];
+                if (provinces.Contains(provinceid))
+                {
+                    var xcord = provincedata[1].Split(",")[0];
+                    var ycord = provincedata[1].Split(",")[1];
+
+                    Image tempImage = new Image();
+                    tempImage.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/temp/" + provinceid + ".png");
+                    //tempImage.Style = (Style)FindResource("ProvinceStyle");
+
+
+                    tempImage.MouseLeftButtonDown += new MouseButtonEventHandler(HandleClickProvince);
+                    RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
+                    //tempImage.Name = provinceid;
+                    map.Children.Add(tempImage);
+                    if (tempProvDict.ContainsKey(int.Parse(provinceid)))
+                    {
+                        tempProvDict[int.Parse(provinceid)] = tempImage;
+                    } else
+                    {
+                        tempProvDict.Add(int.Parse(provinceid), tempImage);
+                    }
+                    
+                    Canvas.SetLeft(tempImage, int.Parse(ycord));
+                    Canvas.SetTop(tempImage, int.Parse(xcord));
+                    Canvas.SetZIndex(tempImage, 1);
+                    //Canvas.SetZIndex(tempImage, i + 1);
+                }
+            }
+        }
+        
         private void GenerateMap(object sender, RoutedEventArgs e)
         {
             stratRegions = new StratRegion();
@@ -172,10 +230,12 @@ namespace HOI4test
             provinceDict = new Dictionary<int, UIElement>();
             GetStateData();
             //MessageBox.Show("lmao");
-            // Create image.
+            // Draw the Background
             txtName.Clear();
             Image newImage = new Image();
-            newImage.Source = LoadBitmapImage(starter.hoi4folder + "/provinces/borders.png");
+            newImage.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/borders.png");
+            newImage.Opacity = 1;
+            map_background = newImage;
             // Create Point for upper-left corner of image.
             grid1.Width = newImage.Width;
             grid1.Height = newImage.Height;
@@ -184,8 +244,9 @@ namespace HOI4test
             //map.Width = newImage.Width;
             //map.Height = newImage.Height;
             
+            
 
-            // Draw image to screen.
+            // Draw the Provinces
 
             string text = System.IO.File.ReadAllText(@starter.hoi4folder + "/mapEditor/provincepos.txt");
             //MessageBox.Show(starter.programfolder + "/provincepos.txt");
@@ -207,9 +268,10 @@ namespace HOI4test
                 Canvas.SetLeft(tempImage, int.Parse(ycord));
                 Canvas.SetTop(tempImage, int.Parse(xcord));
             } */
-            
+            RenderOptions.SetBitmapScalingMode(newImage, BitmapScalingMode.LowQuality);
             map.Children.Add(newImage);
-
+            Canvas.SetZIndex(newImage, 0);
+            num_provinces = int.Parse(newtext[0]);
             for (var i = 0; i < int.Parse(newtext[0]); i++)
             {
                 var provincedata = provincesplit[i].Split(":");
@@ -218,9 +280,10 @@ namespace HOI4test
                 var ycord = provincedata[1].Split(",")[1];
                 
                 Image tempImage = new Image();
-                tempImage.Source = LoadBitmapImage(starter.hoi4folder + "/provinces/" + provinceid + ".png");
+                tempImage.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/" + provinceid + ".png");
                 tempImage.Style = (Style)FindResource("ProvinceStyle");
-                tempImage.Opacity = 0.7;
+                
+                
                 tempImage.MouseLeftButtonDown += new MouseButtonEventHandler(HandleClickProvince);
                 RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
                 //tempImage.Name = provinceid;
@@ -228,8 +291,20 @@ namespace HOI4test
                 provinceDict.Add(int.Parse(provinceid), tempImage);
                 Canvas.SetLeft(tempImage, int.Parse(ycord));
                 Canvas.SetTop(tempImage, int.Parse(xcord));
+                Canvas.SetZIndex(tempImage, 2);
+                //Canvas.SetZIndex(tempImage, i + 1);
             }
 
+            // Draw the Overlay Borders
+            Image background = new Image();
+            background.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/borders2.png");
+            background.IsHitTestVisible = false;
+            background.Opacity = 1;
+            RenderOptions.SetBitmapScalingMode(background, BitmapScalingMode.LowQuality);
+            map.Children.Add(background);
+            Canvas.SetZIndex(background, 3);
+
+            //Canvas.SetZIndex(background, 0);
 
         }
         
@@ -334,7 +409,7 @@ namespace HOI4test
 
         private void HandleClickProvince(object sender, MouseButtonEventArgs e)
         {
-            int nextState = 0;
+            int nextState = selectedState;
             var element = (UIElement)sender;
             var provinceid = provinceDict.FirstOrDefault(x => x.Value.Equals(element)).Key;
             //MessageBox.Show(provinceid.ToString());
@@ -356,9 +431,10 @@ namespace HOI4test
                         stratRegions.transferProvince(provinceid.ToString(), stateDict[stateid][0]);
                         var templist = new List<string>();
                         templist.Add(provinceid.ToString());
-                        var colour = states.countryColour[(string)states.getStates()[stateid]["owner"]];
+                        var colour = states.countryColour[(string)states.getStates()[selectedState]["owner"]];
                         var colourstring = colour[0].ToString() + "," + colour[1].ToString() + "," + colour[2].ToString();
-                        states.RepaintProvinces(templist, colourstring);
+                        
+                        states.RepaintProvinces(templist, colourstring, this);
                     }
                 }
                 stateDict = new Dictionary<int, List<string>>();
@@ -430,6 +506,72 @@ namespace HOI4test
             var whatever = new Exporter();
             whatever.ExportStateData(states.getStates());
 
+
+        }
+
+        public void RepaintMapBridge(object sender, RoutedEventArgs e)
+        {
+            RepaintMap(changedprovinces, changedcolours);
+        }
+
+        public void RepaintMap(List<string> provinces, List<string> colours)
+        {
+            ProcessStartInfo start = new ProcessStartInfo();
+            string provincestring = "";
+            string colourstring = "";
+            foreach (var provincenum in provinces)
+            {
+                if (provincenum != "")
+                {
+                    provincestring += provincenum + ",";
+                }
+
+            }
+            foreach(var colour in colours)
+            {
+                if (colour != "")
+                {
+                    colourstring += colour + ";";
+                }
+            }
+            /*
+             * Exe replacements - done 11/20
+             * 
+             */
+            start.FileName = starter.programfolder + "/dist/maprepainter/maprepainter.exe";
+            //MessageBox.Show(string.Format("C:/Users/alexh/electron/backend/hoi4/maprepainter.py {0} {1}", provincestring, colour));
+            var directory = starter.hoi4folder;
+            start.Arguments = string.Format(" {0} {1} {2} full", provincestring, colourstring, directory);
+            start.UseShellExecute = false;
+            start.CreateNoWindow = true;
+            start.RedirectStandardOutput = true;
+
+            try
+            {
+                using (Process process = Process.Start(start))
+                {
+
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        while (!process.StandardOutput.EndOfStream)
+                        {
+                            string line = process.StandardOutput.ReadLine();
+                            //MessageBox.Show(line);
+                        }
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+
+            foreach (var entry in tempProvDict.Keys)
+            {
+                map.Children.Remove(tempProvDict[entry]);
+            }
+            ReloadMap();
 
         }
     }

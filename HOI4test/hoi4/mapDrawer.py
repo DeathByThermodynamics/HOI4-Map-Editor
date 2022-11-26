@@ -220,6 +220,29 @@ def saveProvinceString(dir, string):
         f.write(string)
 
 
+def redrawProvinceInMap(directory, ids, colourlist, positionlist):
+    map_img = Image.open(directory + "/mapEditor/provinces/borders.png")
+    map_bitmap = np.array(map_img)
+    for index in range(len(ids)):
+
+        id = ids[index]
+        colour = colourlist[index]
+        if id == "":
+            continue
+        x = int(positionlist[id][0])
+        y = int(positionlist[id][1])
+
+        raw_img = Image.open(directory + "/provinces/" + str(id) + ".png")
+        img = np.array(raw_img)
+        width, height = raw_img.size
+        for i in range(width):
+            for j in range(height):
+                if tuple(img[j, i])[3] != 0:
+                    map_bitmap[x+j, y+i] = (colour[0], colour[1], colour[2], 255)
+    pil_img = Image.fromarray(map_bitmap)
+    os.remove(directory + "/mapEditor/provinces/borders.png")
+    pil_img.save(directory + "/mapEditor/provinces/borders.png")
+
 def redrawprovince(directory, id, colour):
     raw_img = Image.open(directory + "/provinces/" + str(id) + ".png")
     img = np.array(raw_img)
@@ -229,9 +252,23 @@ def redrawprovince(directory, id, colour):
             if tuple(img[j, i])[3] != 0:
                 img[j, i] = (colour[0], colour[1], colour[2], 255)
     pil_img = Image.fromarray(img)
-    os.remove(directory + "/provinces/" + str(id) + ".png")
-    pil_img.save(directory + "/provinces/" + str(id) + ".png")
+    os.remove(directory + "/mapEditor/provinces/" + str(id) + ".png")
+    pil_img.save(directory + "/mapEditor/provinces/" + str(id) + ".png")
 
+def redrawprovinceincache(directory, id, colour):
+    raw_img = Image.open(directory + "/provinces/" + str(id) + ".png")
+    img = np.array(raw_img)
+    width, height = raw_img.size
+    for i in range(width):
+        for j in range(height):
+            if tuple(img[j, i])[3] != 0:
+                img[j, i] = (colour[0], colour[1], colour[2], 255)
+    pil_img = Image.fromarray(img)
+    if not os.path.isdir(directory + "/mapEditor/temp"):
+        os.mkdir(directory + "/mapEditor/temp")
+    if os.path.isfile(directory + "/mapEditor/temp/" + str(id) + ".png"):
+        os.remove(directory + "/mapEditor/temp/" + str(id) + ".png")
+    pil_img.save(directory + "/mapEditor/temp/" + str(id) + ".png")
 
 def saveAllProvinces2(indir, outdir, width, countryDict, stateDict, provDict, revprovDict):
     raw_img = Image.open(indir)
@@ -302,6 +339,7 @@ def saveAllProvinces2(indir, outdir, width, countryDict, stateDict, provDict, re
         main.communicator("Finished " + str(accum) + "/" + str(total))
     pil_img = Image.fromarray(new_img)
     pil_img.save(outdir+"/provinces/borders.bmp")
+    pil_img.save(outdir + "/provinces/borders.png")
     border_img = Image.fromarray(overlayborders)
-    border_img.save(outdir+"/provinces/borders2.bmp")
+    border_img.save(outdir+"/provinces/borders2.png")
     return pixelmap

@@ -22,7 +22,9 @@ def communicator(msg):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+
     print("Initiating Map Load")
+    print(backuppath)
     sys.stdout.flush()
     stateDict = mapReader.getStates(backuppath + "/history/states")
     countryDict = countryColourGetter.getCountries(backuppath + "/common")

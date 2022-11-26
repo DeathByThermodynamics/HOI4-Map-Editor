@@ -232,7 +232,7 @@ namespace HOI4test
         {
             int newstateprov = 0;
             if (main.states.states.ContainsKey(int.Parse(state["id"].ToString()))) {
-                main.states.changeState(state, old_owner);
+                main.states.changeState(state, old_owner, main);
             } else
             {
                 main.states.addState(state);

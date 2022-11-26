@@ -75,7 +75,7 @@ namespace HOI4test
                     var resourcedict = (Dictionary<string, object>)stateDict[entry]["resources"];
                     for (var i = 0; i < resourcedict.Count; i++)
                     {
-                        if (!(resourcedict.Values.ElementAt(i).ToString() == ""))
+                        if (!(resourcedict.Values.ElementAt(i).ToString() == "") && !(resourcedict.Values.ElementAt(i).ToString() == "0"))
                         {
                             returnlist.Add(tab + tab + resourcedict.Keys.ElementAt(i).Trim() + " = " + resourcedict.Values.ElementAt(i).ToString());
                         }
@@ -122,14 +122,21 @@ namespace HOI4test
                             returnlist.Add(tab + tab + tab + buildingdict.Keys.ElementAt(i) + " = {");
                             for (var j = 0; j < provincedict.Count; j++)
                             {
-                                returnlist.Add(tab + tab + tab + tab + provincedict.Keys.ElementAt(j) + " = " + provincedict.Values.ElementAt(j).ToString());
+                                if (provincedict.Values.ElementAt(j).ToString() != "0")
+                                {
+                                    returnlist.Add(tab + tab + tab + tab + provincedict.Keys.ElementAt(j) + " = " + provincedict.Values.ElementAt(j).ToString());
+                                }
+                                
                             }
                             returnlist.Add(tab + tab + tab + "}");
                         }
                         else
                         {
-                            
-                            returnlist.Add(tab + tab + tab + buildingdict.Keys.ElementAt(i) + " = " + buildingdict.Values.ElementAt(i).ToString());
+                            if (buildingdict.Values.ElementAt(i).ToString() != "0")
+                            {
+                                returnlist.Add(tab + tab + tab + buildingdict.Keys.ElementAt(i) + " = " + buildingdict.Values.ElementAt(i).ToString());
+                            }
+                                
                         }
                     }
                     returnlist.Add(tab + tab + "}");

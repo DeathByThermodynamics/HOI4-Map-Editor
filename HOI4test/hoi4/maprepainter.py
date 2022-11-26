@@ -4,36 +4,70 @@ import os
 
 import mapReader
 
+# TWO 4TH ARGUMENTS: 'temp' and 'full'
 
-def saveAsLocalFile(name, string):
-    if os.path.isfile("C:/Users/alexh/electron/backend/hoi4/" + name):
-        os.remove("C:/Users/alexh/electron/backend/hoi4/" + name)
-    with open("C:/Users/alexh/electron/backend/hoi4/" + name, 'w') as f:
-        f.write(string)
+provinces = "1"
+colour = "0,0,255"
+directory = "C:/users/alexh/terralis"
+param = "temp"
+if len(sys.argv) > 3:
 
-
-
-provinces = sys.argv[1]
-colour = sys.argv[2]
-
+    provinces = sys.argv[1]
+    colour = sys.argv[2]
+    directory = sys.argv[3]
+    param = sys.argv[4]
 print("done")
 
 def repaintProvinces(provincelist, colour):
-    directory = 'C:/Users/alexh/terralis'
     for i in provincelist:
-        if i != "":
+        if i != "" and colour != ",":
             provinceid = int(i)
 
-            mapDrawer.redrawprovince(directory, provinceid, colour)
+            mapDrawer.redrawprovinceincache(directory, provinceid, colour)
 
+def radicalMapRepaint(provincelist, colour):
+    provPosDict = getProvincePositions(directory)
+    mapDrawer.redrawProvinceInMap(directory, provincelist, colour, provPosDict)
 
+def getProvincePositions(directory):
+    provdictionary = {}
+    f = open(directory + "/mapEditor/provincepos.txt")
+    line = f.readline()
+    line = line.split(";")
+    entries = line[1].split("?")
+    for i in entries:
+        if i == "":
+            continue
+        ip = i.split(":")
+        print(ip)
+        coords = ip[1].split(",")
+        provdictionary[ip[0]] = (coords[0], coords[1])
+    f.close()
+    #print(provdictionary)
+    return provdictionary
 
-provinces1 = provinces.strip(",").split(",")
-colourlist = colour.split(",")
-colourfinal = (colourlist[0], colourlist[1], colourlist[2])
-saveAsLocalFile("debugdraw1.txt", provinces + " " + colour)
-repaintProvinces(provinces1, colourfinal)
-saveAsLocalFile("debugdraw.txt", str(provinces) + str(colour))
+def tripletize(string):
+    # Assumes it is tripletizable
+    if "," in string:
+        string = string.split(",")
+        return (string[0], string[1], string[2])
+
+#saveAsLocalFile("debugdraw1.txt", provinces + " " + colour)
+
+if param == "temp":
+    # this is the old method of taking each province, blitting a new version, and then putting it back into the program
+    provinces1 = provinces.strip(",").split(",")
+    colourlist = colour.split(",")
+    colourfinal = (colourlist[0], colourlist[1], colourlist[2])
+    repaintProvinces(provinces1, colourfinal)
+
+elif param == "full":
+    # this is the new method which draws directly on the background
+    # assumes colour is a giant string for each province, in the form "0,0,0;0,0,0;0,0,0" etc
+    provinces1 = provinces.strip(",").split(",")
+    colourfinal = list(map(tripletize, colour.split(";")))
+    radicalMapRepaint(provinces1, colourfinal)
+#saveAsLocalFile("debugdraw.txt", str(provinces) + str(colour))
 #print(str(provinces) + str(colour))
 #print("bruh moment")
 sys.stdout.flush()
