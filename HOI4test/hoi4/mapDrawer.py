@@ -237,8 +237,10 @@ def redrawProvinceInMap(directory, ids, colourlist, positionlist):
         width, height = raw_img.size
         for i in range(width):
             for j in range(height):
-                if tuple(img[j, i])[3] != 0:
-                    map_bitmap[x+j, y+i] = (colour[0], colour[1], colour[2], 255)
+                if tuple(img[j, i])[3]:
+                    bitval = map_bitmap[x+j, y+i]
+                    if int(bitval[0]) + int(bitval[1]) + int(bitval[2]) != 0:
+                        map_bitmap[x+j, y+i] = (colour[0], colour[1], colour[2], 255)
     pil_img = Image.fromarray(map_bitmap)
     os.remove(directory + "/mapEditor/provinces/borders.png")
     pil_img.save(directory + "/mapEditor/provinces/borders.png")

@@ -69,6 +69,35 @@ namespace HOI4test
 
         }
 
+        public bool checkStateCoastal()
+        {
+            foreach (var stateid in main.stateDict.Keys)
+            {
+                if (main.stateDict[stateid].Contains(province.ToString()))
+                {
+                    foreach (var prov in main.stateDict[stateid])
+                    {
+                        string coastal;
+                        if (MainWindow.definition.ContainsKey(prov.ToString()))
+                        {
+                            coastal = MainWindow.definition[prov.ToString()][4].ToString();
+                            //MessageBox.Show(coastal);
+                        }
+                        else
+                        {
+                            coastal = "false";
+                        }
+                        if (!(coastal == "false")) {
+                            //MessageBox.Show("found");
+                            return true;
+                        }
+                    }
+                    //MessageBox.Show("nocehcks");
+                    return false;
+                }
+            }
+            return false;
+        }
         public void defineBuildings()
         {
             buildings = new List<string>();
@@ -108,7 +137,14 @@ namespace HOI4test
                         // Believe it or not, this is an intentional 'typo'
                         if (splittext1[k].StartsWith("only_costal") && splittext1[k].EndsWith("yes") && coastal == "false")
                         {
-                            cancelled = true;
+                            if (prov)
+                            {
+                                cancelled = true;
+                            } else if (!checkStateCoastal())
+                            {
+                                cancelled = true;
+                            }
+                            
                         }
 
                     }
@@ -404,7 +440,14 @@ namespace HOI4test
         {
             defineBuildings();
             buildingwindow = new BuildingView(buildings, provinceBuildings);
-            
+            foreach (var i in buildings)
+            {
+                buildingwindow.buildingboxes[i].Text = "0";
+            }
+            foreach (var i in provinceBuildings)
+            {
+                buildingwindow.provinceboxes[i].Text = "0";
+            }
             if (state.ContainsKey("buildings"))
             {
                 var castmaster = (Dictionary<string, object>)state["buildings"];
@@ -415,7 +458,7 @@ namespace HOI4test
                     if (castmaster.Keys.Contains(i))
                     {
                         buildingwindow.buildingboxes[i].Text = castmaster[i].ToString();
-                    } 
+                    }
 
                 }
                 if (castmaster.Keys.Contains(province.ToString()))
@@ -425,18 +468,6 @@ namespace HOI4test
                     {
                         buildingwindow.provinceboxes[provbuild.Key].Text = provbuild.Value.ToString();
                     }
-                }
-            }
-
-            else
-            {
-                foreach (var i in buildings)
-                {
-                    buildingwindow.buildingboxes[i].Text = "0";
-                }
-                foreach (var i in provinceBuildings)
-                {
-                    buildingwindow.provinceboxes[i].Text = "0";
                 }
             }
             buildingwindow.Owner = this;

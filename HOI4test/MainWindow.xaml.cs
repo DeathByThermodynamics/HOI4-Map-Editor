@@ -39,7 +39,7 @@ namespace HOI4test
         ProvinceView provincewindow;
         public States states;
         public StratRegion stratRegions;
-        Dictionary<int,List<string>> stateDict = new Dictionary<int, List<string>>();
+        public Dictionary<int,List<string>> stateDict = new Dictionary<int, List<string>>();
         Dictionary<int, UIElement> provinceDict;
         Dictionary<int, UIElement> tempProvDict;
         public static Dictionary<string, List<string>> definition;
@@ -202,11 +202,12 @@ namespace HOI4test
 
 
                     tempImage.MouseLeftButtonDown += new MouseButtonEventHandler(HandleClickProvince);
-                    RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
+                    //RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
                     //tempImage.Name = provinceid;
                     map.Children.Add(tempImage);
                     if (tempProvDict.ContainsKey(int.Parse(provinceid)))
                     {
+                        map.Children.Remove(tempProvDict[int.Parse(provinceid)]);
                         tempProvDict[int.Parse(provinceid)] = tempImage;
                     } else
                     {
@@ -215,7 +216,7 @@ namespace HOI4test
                     
                     Canvas.SetLeft(tempImage, int.Parse(ycord));
                     Canvas.SetTop(tempImage, int.Parse(xcord));
-                    Canvas.SetZIndex(tempImage, 1);
+                    Canvas.SetZIndex(tempImage, -1);
                     //Canvas.SetZIndex(tempImage, i + 1);
                 }
             }
@@ -270,8 +271,11 @@ namespace HOI4test
             } */
             RenderOptions.SetBitmapScalingMode(newImage, BitmapScalingMode.LowQuality);
             map.Children.Add(newImage);
-            Canvas.SetZIndex(newImage, 0);
+            Canvas.SetZIndex(newImage, -2);
             num_provinces = int.Parse(newtext[0]);
+            
+            List<Image> sortedProvinces = new List<Image>();
+            Dictionary<Image, List<string>> provinceData = new Dictionary<Image, List<string>>();
             for (var i = 0; i < int.Parse(newtext[0]); i++)
             {
                 var provincedata = provincesplit[i].Split(":");
@@ -287,12 +291,36 @@ namespace HOI4test
                 tempImage.MouseLeftButtonDown += new MouseButtonEventHandler(HandleClickProvince);
                 RenderOptions.SetBitmapScalingMode(tempImage, BitmapScalingMode.LowQuality);
                 //tempImage.Name = provinceid;
-                map.Children.Add(tempImage);
+                
                 provinceDict.Add(int.Parse(provinceid), tempImage);
-                Canvas.SetLeft(tempImage, int.Parse(ycord));
-                Canvas.SetTop(tempImage, int.Parse(xcord));
-                Canvas.SetZIndex(tempImage, 2);
+                sortedProvinces.Add(tempImage);
+                var templist = new List<string>();
+                templist.Add(xcord);
+                templist.Add(ycord);
+                provinceData.Add(tempImage, templist);
+                //map.Children.Add(tempImage);
+                //Canvas.SetLeft(tempImage, int.Parse(ycord));
+                //Canvas.SetTop(tempImage, int.Parse(xcord));
+                //Canvas.SetZIndex(tempImage, 2);
                 //Canvas.SetZIndex(tempImage, i + 1);
+            }
+            
+            /*
+            sortedProvinces.Sort(delegate (Image x, Image y)
+            {
+                var xarea = (x).ActualWidth * (x).ActualHeight;
+                var yarea = (y).ActualWidth * (y).ActualHeight;
+                return xarea > yarea ? 1
+                        : xarea < yarea ? -1
+                        : 0;
+            }); */
+
+            //sortedProvinces.Reverse();
+
+            foreach (var province in sortedProvinces) {
+                map.Children.Add(province);
+                Canvas.SetLeft(province, int.Parse(provinceData[province][1]));
+                Canvas.SetTop(province, int.Parse(provinceData[province][0]));
             }
 
             // Draw the Overlay Borders
@@ -311,7 +339,7 @@ namespace HOI4test
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var matTrans = backGrid2.RenderTransform as MatrixTransform;
-            var pos1 = e.GetPosition(backGrid1);
+            var pos1 = e.GetPosition(BackCanvas);
 
             var scale1 = e.Delta > 0 ? 1.1 : 1 / 1.1;
 
@@ -374,6 +402,7 @@ namespace HOI4test
             Point dropPosition = e.GetPosition(BackCanvas);
             displacementFromMouse = new Point(displacementFromMouse.X / scale, displacementFromMouse.Y / scale);
             
+            /*
             if (dropPosition.X - displacementFromMouse.X < x_lim + x_change1)
             {
                 Canvas.SetLeft(MapPanel, x_lim + x_change1);
@@ -384,8 +413,9 @@ namespace HOI4test
             {
                 Canvas.SetLeft(MapPanel, dropPosition.X - displacementFromMouse.X);
             }
-
-
+            */
+            Canvas.SetLeft(MapPanel, dropPosition.X - displacementFromMouse.X);
+            /*
             if (dropPosition.Y - displacementFromMouse.Y < y_lim + y_change1)
             {
                 Canvas.SetTop(MapPanel, y_lim + y_change1);
@@ -398,8 +428,8 @@ namespace HOI4test
             {
                 Canvas.SetTop(MapPanel, dropPosition.Y - displacementFromMouse.Y);
             }
-
-            
+            */
+            Canvas.SetTop(MapPanel, dropPosition.Y - displacementFromMouse.Y);
         }
 
         private void HandleMouseDown(object sender, MouseButtonEventArgs e)
@@ -534,6 +564,10 @@ namespace HOI4test
                     colourstring += colour + ";";
                 }
             }
+            provincestring = provincestring.Remove(provincestring.Length - 1);
+            colourstring = colourstring.Remove(colourstring.Length - 1);
+            //MessageBox.Show(provincestring);
+            //MessageBox.Show(colourstring);
             /*
              * Exe replacements - done 11/20
              * 
@@ -571,7 +605,11 @@ namespace HOI4test
             {
                 map.Children.Remove(tempProvDict[entry]);
             }
+            tempProvDict = new Dictionary<int, UIElement>();
             ReloadMap();
+            changedprovinces.Clear();
+            changedcolours.Clear();
+               
 
         }
     }
