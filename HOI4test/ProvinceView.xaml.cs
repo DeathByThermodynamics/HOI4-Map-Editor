@@ -92,7 +92,6 @@ namespace HOI4test
                             return true;
                         }
                     }
-                    //MessageBox.Show("nocehcks");
                     return false;
                 }
             }

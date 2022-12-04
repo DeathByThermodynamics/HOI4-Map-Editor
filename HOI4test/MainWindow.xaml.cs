@@ -19,6 +19,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = System.Windows.Controls.Image;
 using Application = System.Windows.Application;
 using Color = System.Windows.Media.Color;
+using hoi4test3;
 
 namespace HOI4test
 {
@@ -36,7 +37,7 @@ namespace HOI4test
         double y_change1;
         double x_change2;
         double y_change2;
-        ProvinceView provincewindow;
+        //ProvinceView provincewindow;
         public States states;
         public StratRegion stratRegions;
         public Dictionary<int,List<string>> stateDict = new Dictionary<int, List<string>>();
@@ -50,10 +51,12 @@ namespace HOI4test
         public List<string> changedcolours;
         bool mapProcess = false;
         int num_provinces = 0;
+        NewProvinceView provinceView;
         public MainWindow()
         {
             InitializeComponent();
-            provincewindow = new ProvinceView(this);
+            new hoi4test3.DataManager();
+            //provincewindow = new ProvinceView(this);
             
             x_change1 = +((x_lim - x_lim * scale) / 2);
             y_change1 = +((y_lim - y_lim * scale) / 2);
@@ -63,6 +66,7 @@ namespace HOI4test
             changedprovinces = new List<string>();
             changedcolours = new List<string>();
             tempProvDict = new Dictionary<int, UIElement>();
+            provinceView = new NewProvinceView(this);
         }
 
         public void Exit(object sender, RoutedEventArgs e)
@@ -160,8 +164,8 @@ namespace HOI4test
                         }
                  }
                 selectedState = states.states.Count;
-                provincewindow.updateWindow(states.getStates()[selectedState], newstateprov);
-
+                //provincewindow.updateWindow(states.getStates()[selectedState], newstateprov);
+                provinceView.updateWindow(states.getStates()[selectedState], newstateprov);
             }
 
 
@@ -226,13 +230,12 @@ namespace HOI4test
         {
             stratRegions = new StratRegion();
             stratRegions.getStratRegions(starter.hoi4folder);
-            provincewindow.Owner = this;
-            provincewindow.Show();
+            //provincewindow.Owner = this;
+            //provincewindow.Show();
             provinceDict = new Dictionary<int, UIElement>();
             GetStateData();
             //MessageBox.Show("lmao");
             // Draw the Background
-            txtName.Clear();
             Image newImage = new Image();
             newImage.Source = LoadBitmapImage(starter.hoi4folder + "/mapEditor/provinces/borders.png");
             newImage.Opacity = 1;
@@ -519,10 +522,12 @@ namespace HOI4test
             selectedState = nextState;
             if (notocean)
             {
-                provincewindow.updateWindow(states.getStates()[selectedState], provinceid);
+                //provincewindow.updateWindow(states.getStates()[selectedState], provinceid);
+                provinceView.updateWindow(states.getStates()[selectedState], provinceid);
+
             }
-            
-            
+
+
         }
 
         private void Save(object sender, RoutedEventArgs e)
@@ -549,21 +554,15 @@ namespace HOI4test
             ProcessStartInfo start = new ProcessStartInfo();
             string provincestring = "";
             string colourstring = "";
-            foreach (var provincenum in provinces)
+            //MessageBox.Show(provinces.Count.ToString());
+            //MessageBox.Show(colours.Count.ToString());
+            for (var i = 0; i < provinces.Count; i++)
             {
-                if (provincenum != "")
-                {
-                    provincestring += provincenum + ",";
-                }
-
+                provincestring += provinces[i] + ",";
+                colourstring += colours[i] + ";";
             }
-            foreach(var colour in colours)
-            {
-                if (colour != "")
-                {
-                    colourstring += colour + ";";
-                }
-            }
+            //MessageBox.Show(provincestring);
+            //MessageBox.Show(colourstring);
             provincestring = provincestring.Remove(provincestring.Length - 1);
             colourstring = colourstring.Remove(colourstring.Length - 1);
             //MessageBox.Show(provincestring);
@@ -610,7 +609,57 @@ namespace HOI4test
             changedprovinces.Clear();
             changedcolours.Clear();
                
+            
+        }
+        public void alignOnGrid(Grid grid, UIElement element, int row, int column)
+        {
+            Grid.SetRow(element, row);
+            Grid.SetColumn(element, column);
+            grid.Children.Add(element);
+        }
+        public void updateUIContent(UIElement element, string content)
+        {
+            if (element is Label)
+            {
+                ((Label)element).Content = content;
+            }
+            else if (element is TextBox)
+            {
+                ((TextBox)element).Text = content;
+            }
+            else if (element is ComboBox)
+            {
+                ((ComboBox)element).Text = content;
+            }
+            else if (element is CheckBox)
+            {
+                ((CheckBox)element).IsChecked = bool.Parse(content);
+            }
+            else if (element is Slider)
+            {
+                ((Slider)element).Value = double.Parse(content);
+            } else
+            {
+                MessageBox.Show("Error: " + element.ToString() + " is not a valid UI element");
+            }
+            /*
+            else if (element is Image)
+            {
+                ((Image)element).Source = new BitmapImage(new Uri(content));
+            } */
+        }
+        
+        public void TextBox_CheckNumbersOnly(object sender, TextCompositionEventArgs e) =>
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || ':'.Equals(x));
 
+        private void SaveState(object sender, RoutedEventArgs e)
+        {
+            provinceView.saveWindows();
+        }
+
+        private void CreateNewState(object sender, RoutedEventArgs e)
+        {
+            provinceView.CreateNewState();
         }
     }
 }

@@ -12,8 +12,8 @@
         <Label Content="Input Folder (Folder containing &#xD;&#xA;HOI4 game files)" HorizontalAlignment="Left" Margin="21,61,0,0" VerticalAlignment="Top" Height="58" Width="202"/>
         <Button Click="LoadFiles" Content="Load" HorizontalAlignment="Left" Margin="48,282,0,0" VerticalAlignment="Top"/>
         <Button Click="StartProgram" Content="Start" HorizontalAlignment="Left" Margin="161,282,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="Inputs" HorizontalAlignment="Left" Margin="48,115,0,0" TextWrapping="Wrap" Text="C:/" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Outputs" HorizontalAlignment="Left" Margin="48,187,0,0" TextWrapping="Wrap" Text="C:/" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="Inputs" HorizontalAlignment="Left" Margin="48,115,0,0" TextWrapping="Wrap" Text="C:/users/alexh/hoi4example" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="Outputs" HorizontalAlignment="Left" Margin="48,187,0,0" TextWrapping="Wrap" Text="C:/users/alexh/hoi4example/statetest" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
         <ProgressBar HorizontalAlignment="Left" Height="10" Margin="72,314,0,0" VerticalAlignment="Top" Width="100"/>
         <TextBlock x:Name="StatusUpdater" HorizontalAlignment="Center" Margin="0,234,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230" Height="36"><Run Language="en-ca" Text="..."/></TextBlock>
 

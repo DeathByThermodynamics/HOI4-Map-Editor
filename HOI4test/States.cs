@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.IO;
 using HOI4test;
+using hoi4test3;
 
 /*
  * States is contained in a list / dictionary of dictionaries.
@@ -232,129 +233,9 @@ public class States
     }
     public States(string directory)
     {
-        countryColour = new Dictionary<string, List<int>>();
-        string text = System.IO.File.ReadAllText(@directory);
-        var newtext = text.Split(":");
-        var statesplit = newtext[1].Split("?");
-        states = new Dictionary<int, Dictionary<string, Object>>();
-        for (var i = 0; i < int.Parse(newtext[0]); i++)
-        {
-            //MessageBox.Show(statesplit[i]);
-            var idsplit = statesplit[i].TrimEnd('\n').Split(";");
-            var infosplit = idsplit[1].Split("$");
-            states.Add(int.Parse(idsplit[0]), new Dictionary<string, Object>());
-            int placer = int.Parse(idsplit[0]);
-            states[placer].Add("id", int.Parse(idsplit[0]));
-            foreach (var entry in infosplit)
-            {
-                if (entry != "")
-                {
-                    
-
-                    var name = entry.Split(">")[0];
-
-                    var entries = entry.Split(">")[1];
-
-
-                    if (name == "manpower" || name == "owner" || name == "category")
-                    {
-                        states[placer].Add(name, entries);
-                    }
-
-                    else if (name == "provinces")
-                    {
-                        var provinces = entries.Split("!");
-                        states[placer].Add(name, provinces);
-                    }
-
-                    else if (name == "buildings")
-                    {
-                        var buildings = entries.Split("!");
-                        var building_list = new Dictionary<string, Object>();
-                        for (var k = 0; k < buildings.Length; k++)
-                        {
-                            if (buildings[k] == "")
-                            {
-                                continue;
-                            }
-                            var building_split = buildings[k].Split("#");
-                            if (building_split[0].StartsWith("@"))
-                            {
-                                var province_split = building_split[0].Split("@")[1];
-                                var provincebuildings = building_split[1].Split("+");
-                                var provincebuildingDict = new Dictionary<string, int>();
-                                for (var l = 0; l < provincebuildings.Length; l++)
-                                {
-                                    if (provincebuildings[l] != "")
-                                    {
-                                        var building = provincebuildings[l].Split("<");
-                                        provincebuildingDict.Add(building[0], int.Parse(building[1]));
-
-                                    }
-                                }
-                                building_list.Add(province_split, provincebuildingDict);
-                            }
-                            else
-                            {
-                                building_list.Add(building_split[0], int.Parse(building_split[1]));
-                            }
-                        }
-                        states[placer].Add(name, building_list);
-                    }
-
-                    else if (name == "vp")
-                    {
-                        var vp = entries.Split("!");
-                        var vp_list = new Dictionary<string, string>();
-
-                        for (var k = 0; k < vp.Length; k++)
-                        {
-                            if (vp[k] == "" || !vp[k].Contains("#"))
-                           {
-                               continue;
-                           }
-                           var vp_split = vp[k].Split("#");
-                           vp_list.Add(vp_split[0], vp_split[1]);
-                       }
-                       states[placer].Add(name, vp_list);
-                   }
-                   else if (name == "cores")
-                   {
-                       var cores = entries.Split("!");
-                       states[placer].Add(name, cores);
-                   }
-
-                   else if (name == "resources")
-                   {
-                       var resources = entries.Split("!");
-                       var resources_list = new Dictionary<string, object>();
-                       for (var k = 0; k < resources.Length; k++)
-                       {
-                            if (resources[k] == "" || !resources[k].Contains("#"))
-                            {
-                                continue;
-                            }
-                            var resource_split = resources[k].Split("#");
-                            var uwu = resource_split[0];
-                            if (!resources_list.ContainsKey(resource_split[0])) {
-                               resources_list.Add(resource_split[0], resource_split[1]);
-                            }
-                            
-                       }
-                       states[placer].Add(name, resources_list);
-                   }
-                   else
-                   {
-                       Debug.WriteLine("Error: " + name);
-                   }
-
-                }
-
-
-
-            }
-
-        }
+        countryColour = DataManager.countryColourData;
+        states = DataManager.fullStateData;
+       
     }
 
     public Dictionary<int, Dictionary<string, Object>> getStates()

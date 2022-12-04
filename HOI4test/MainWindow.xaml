@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HOI4test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" Height="1000" Width="1920">
 
     <Window.Resources>
         <Style x:Key="ProvinceStyle" TargetType="{x:Type Image}">
@@ -40,6 +40,7 @@
                             <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="1"/>
                         </Setter.Value>
                     </Setter>
+                    <Setter Property="Image.Opacity" Value="0.45"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -69,19 +70,22 @@
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="4*" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="25*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="15*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="70*" />
+            <ColumnDefinition Width="30*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Border BorderBrush="Gray" BorderThickness="4" Grid.ColumnSpan="4" Margin="44,171,44,36" Grid.RowSpan="8">
+        <Border BorderBrush="Gray" BorderThickness="5" Grid.Row="2" Grid.Column="1" Margin="0,0,0,0" Grid.RowSpan="4" Grid.ColumnSpan="2">
             <Grid x:Name="backGrid3"   ClipToBounds="True">
                 <Grid x:Name="backGrid2">
                     <Grid.RenderTransform>
@@ -110,11 +114,198 @@
 
             </Grid>
         </Border>
+        <Border BorderBrush="Gray" BorderThickness="5, 5, 0, 0" Grid.Row="4" Grid.Column="2" Margin="0,0,0,0" Grid.RowSpan="2" Grid.ColumnSpan="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="20*" />
+                    <RowDefinition Height="4*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1.25*" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2.25*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="txtName" Margin="175,39,277,261" />
-        
+                <Rectangle Grid.Row="0" Grid.RowSpan="3"  Grid.ColumnSpan="7" Fill="White"/>
+                <Viewbox Grid.Row="0" Grid.Column="0">
+                    <Label Content="State ID"></Label>
+                </Viewbox>
+                <Viewbox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" >
+                    <Label x:Name="StateID" Content="N/A"></Label>
+                </Viewbox>
+
+                
+
+                <Viewbox Grid.Row="0" Grid.Column="3">
+                    <Label Content="Province ID"></Label>
+                </Viewbox>
+                <Viewbox Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" >
+                    <Label x:Name="ProvinceID" Content="N/A"></Label>
+                </Viewbox>
+
+                <TabControl Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="7">
+                    
+                    <TabItem Header="Political" FontSize="15">
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="22*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="22*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="22*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="1" Grid.Row="1" Content="Owner"></Label>
+                            <TextBox x:Name="ProvOwner" Grid.Column="3" Grid.Row="1" MaxLength="3"/>
+                            <TextBox x:Name="Manpower" PreviewTextInput="TextBox_CheckNumbersOnly" Grid.Column="3" Grid.Row="3"/>
+                            <TextBox x:Name="Cores" Grid.Column="3" Grid.Row="5"/>
+                            <TextBox x:Name="Claims" Grid.Column="3" Grid.Row="7"/>
+                            <TextBox x:Name="VP" PreviewTextInput="TextBox_CheckNumbersOnly" Grid.Column="11" Grid.Row="1"/>
+                            <ComboBox x:Name ="category" Grid.Column="3" Grid.Row="9" Grid.ColumnSpan="2">
+                                <ComboBoxItem x:Name ="wasteland">wasteland</ComboBoxItem>
+                                <ComboBoxItem x:Name ="enclave">enclave</ComboBoxItem>
+                                <ComboBoxItem x:Name ="small_island">small_island</ComboBoxItem>
+                                <ComboBoxItem x:Name ="tiny_island">tiny_island</ComboBoxItem>
+                                <ComboBoxItem x:Name ="pastoral">pastoral</ComboBoxItem>
+                                <ComboBoxItem x:Name ="rural">rural</ComboBoxItem>
+                                <ComboBoxItem x:Name ="town" >town</ComboBoxItem>
+                                <ComboBoxItem x:Name ="large_town" >large_town</ComboBoxItem>
+                                <ComboBoxItem x:Name="city">city</ComboBoxItem>
+                                <ComboBoxItem x:Name="large_city">large_city</ComboBoxItem>
+                                <ComboBoxItem x:Name="metropolis">metropolis</ComboBoxItem>
+                                <ComboBoxItem x:Name="megalopolis">megalopolis</ComboBoxItem>
+                            </ComboBox>
+                            <Label Grid.Column="1" Grid.Row="3" Content="Manpower"></Label>
+                            <Label Grid.Column="1" Grid.Row="5" Content="Cores"></Label>
+                            <Label Grid.Column="1" Grid.Row="7" Content="Claims"></Label>
+                            <Label Grid.Column="1" Grid.Row="9" Content="Category"></Label>
+                            <Label Grid.Column="9" Grid.Row="1" Content="VPs"></Label>
+                            <Label Grid.Column="5" Grid.Row="1" Content="DMZ"></Label>
+                            <Viewbox Grid.Row="1" Grid.Column="7">
+                                <CheckBox x:Name="DMZ" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                            </Viewbox>
+                            <Label Grid.Column="5" Grid.Row="3" Content="Impassable"></Label>
+                            <Viewbox Grid.Row="3" Grid.Column="7">
+                                <CheckBox x:Name="Impassable" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                            </Viewbox>
+                            </Grid>
+                    </TabItem>
+                    <TabItem Header="Buildings" FontSize="15">
+
+                            <!-- Temporary Solution for ScrollViewer height -->
+                            <Grid x:Name="BuildingGrid" Height="Auto">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="28*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="28*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="28*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="14*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+
+                    </TabItem>
+                    <TabItem Header="Resources" FontSize="15">
+                        <Grid x:Name="ResourcesGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="18*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="23*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="23*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="23*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+                <Button Grid.Row="2" Grid.Column="5" Grid.ColumnSpan="2" Content="Save State" Click="SaveState"></Button>
+                <Button Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Content="Create New State" Click="CreateNewState"></Button>
+
+            </Grid>
+
+        </Border>
+
+
+        <TextBox x:Name="placeholder" Margin="175,39,277,261" />
+
         <Grid/>
-        <Grid Grid.ColumnSpan="2" Margin="0,0,0,57">
+        <Grid Grid.ColumnSpan="3" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20*" />
                 <ColumnDefinition Width="1*" />
