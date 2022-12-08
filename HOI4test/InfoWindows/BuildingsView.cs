@@ -106,7 +106,7 @@ namespace hoi4test3.InfoWindows
                 main.alignOnGrid(main.BuildingGrid, viewbox, row, col);
                 main.alignOnGrid(main.BuildingGrid, textbox, row, col + 2);
 
-                col += 2;
+                row += 2;
                 if (row > 15)
                 {
                     row = 1;
