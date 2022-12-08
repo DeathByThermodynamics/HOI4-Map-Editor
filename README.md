@@ -27,23 +27,33 @@ Important: `common` (and especially country ids) are needed for the application 
 
 If the starter window does not move past `Initializing Map Load` after ~10 seconds, you may have the wrong folder chosen. As reference, the loader completes loading the vanilla map after ~2-3 minutes - this will be optimized in future builds.
 
-![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/preview2.jpg)
+![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/caption1.jpg)
 
-After it finishes, you `start` and then `generate map` in order to render the map with the editor. I plan on creating a separate window for generating the map, so be aware that for now, clicking generate map again after the map has loading will crash the application.
+After it finishes, you `start` and then `generate map` in order to render the map with the editor. I plan on creating a separate window for generating the map, so be aware that for now, clicking generate map again after the map has loaded will crash the application.
 
 ## Current Functions
 ### GUI and Functions
-![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/hoi4editorpreview.png)
+![alt text](https://github.com/DeathByThermodynamics/HOI4-Map-Editor/blob/master/caption2.jpg)
 
-Currently, the editor can:
-- import state / map data based on your HO4 mod installation folder
-- change buildings in a state
-- change basic stats of a state
+I've redone the GUI and gotten rid of the messy windows for a sleeker built-in GUI, limiting the application itself to a single window. I've also made the three tabs keep their information even when moving to another, so feel free to add a few more military factories to Upper Austria before turning Vienna into a 50 VP province. Keep in note you must click 'Save State' before clicking on another province, or your changes will be lost.
+
+#### State Editing
+Within the state view (as seen in the bottom left corner), the editor can:
+- change buildings in a state and province. It is recommended to change railways and supply nodes in `Nudge` instead, as you can visualize those.
+- change the basis stats of a state, such as manpower, state category, and more.
 - change ownership of a state
-- add resources to a state
-- add a province to a state, removing it from any other states. All VPs and province buildings are also transferred.
-- export state data to be used in your mod
-- strategic regions cannot yet be edited, but will update whenever a province transfers states.
+- change the resources of a state
+
+
+#### Provincial Ownership
+By shift clicking a province outside of a state (which is not lake/ocean) while selecting a state, you will transfer that province to your selected state. This will also transfer the province's properties, such as any buildings or victory points. The colour of the province will also update if it is switching owners.
+
+By pressing `Create New State` in the State view in the bottom left corner, you can create a new state with the same owner and the singular province that you were selecting. Keep in mind, you cannot delete states currently - and I am not sure if I want to add this because it has the potential to massively affect state IDs and focus trees, by extension.
+
+Note that strategic regions cannot yet be edited, but will update whenever a province transfers states.
+
+### Reload Map
+Whenever the ownership of the state or province is changed, the colour of the province(s) will update to reflect that. Before exiting the editor, please click on `Reload Map` in order to make the map changes permanent - otherwise, the next time you enter the application, the visual changes will have been reverted.
 
 ### Saving
 
