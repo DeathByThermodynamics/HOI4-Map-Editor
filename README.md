@@ -21,7 +21,7 @@ Here, `hoi4example` is my chosen installation folder. Currently, the program nee
 - `map`, for constructing the map to be displayed
 - `history`, for building and state data
 
-The code will create a `provinces` folder in the mod installation folder, but otherwise will not touch the input folder!
+The code will create a `MapEditor` folder in the mod installation folder, but otherwise will not touch the input folder!
 
 Important: `common` (and especially country ids) are needed for the application to function properly - if there are no tags, you won't be able to set the owner of a state.
 
