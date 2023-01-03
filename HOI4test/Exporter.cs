@@ -156,9 +156,36 @@ namespace HOI4test
                     }
                 }
 
+                if (stateDict[entry].ContainsKey("claims"))
+                {
+                    var claimlist1 = (string[])stateDict[entry]["claims"];
+                    var claimlist = claimlist1.ToList<string>();
+                    for (var i = 0; i < claimlist.Count; i++)
+                    {
+                        if (claimlist[i] != "")
+                        {
+                            returnlist.Add(tab + tab + "add_claim_by = " + claimlist[i]);
+                        }
+
+                    }
+                }
+
                 //MessageBox.Show("8");
                 returnlist.Add(tab + "}");
-
+                if (stateDict[entry].ContainsKey("impassable"))
+                {
+                    if (stateDict[entry]["impassable"] == "yes")
+                    {
+                        returnlist.Add(tab + "impassable = yes");
+                    }
+                }
+                if (stateDict[entry].ContainsKey("dmz"))
+                {
+                    if (stateDict[entry]["dmz"] == "yes")
+                    {
+                        returnlist.Add(tab + "set_demilitarized_zone = yes");
+                    }
+                }
                 if (stateDict[entry].ContainsKey("provinces"))
                 {
                     returnlist.Add(tab + "provinces = {");

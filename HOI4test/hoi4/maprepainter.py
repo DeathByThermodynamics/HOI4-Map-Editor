@@ -6,10 +6,10 @@ import mapReader
 
 # TWO 4TH ARGUMENTS: 'temp' and 'full'
 
-provinces = "2583,"
-colour = "106,100,95;"
+provinces = "1"
+colour = "0,0,255"
 directory = "C:/users/alexh/terralis"
-param = "full"
+param = "temp"
 if len(sys.argv) > 3:
 
     provinces = sys.argv[1]
@@ -39,7 +39,7 @@ def getProvincePositions(directory):
         if i == "":
             continue
         ip = i.split(":")
-        #print(ip)
+        print(ip)
         coords = ip[1].split(",")
         provdictionary[ip[0]] = (coords[0], coords[1])
     f.close()

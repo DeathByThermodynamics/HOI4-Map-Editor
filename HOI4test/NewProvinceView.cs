@@ -18,6 +18,7 @@ namespace hoi4test3
         PoliticalView politicalView;
         ResourcesView resourcesView;
         BuildingsView buildingsView;
+        List<string> ints;
 
         public NewProvinceView(MainWindow main)
         {
@@ -27,6 +28,16 @@ namespace hoi4test3
             politicalView = new PoliticalView(main);
             resourcesView = new ResourcesView(main);
             buildingsView = new BuildingsView(main);
+            ints = new List<string>();
+            ints.Add("1"); // Github copilot generated this and I'm too lazy to change
+            ints.Add("2");
+            ints.Add("3");
+            ints.Add("4");
+            ints.Add("5");
+            ints.Add("6");
+            ints.Add("7");
+            ints.Add("8");
+            ints.Add("9");
         }
 
         public void updateWindow(Dictionary<string, Object> stateinfo, int provinceid)
@@ -53,23 +64,23 @@ namespace hoi4test3
 
             if (!stateInfo.ContainsKey("buildings"))
             {
-                stateInfo.Remove("buildings");
+                //stateInfo.Remove("buildings");
                 stateInfo.Add("buildings", buildingWindowData);
             } else
             {
                 var tempstate = (Dictionary<string, object>)stateInfo["buildings"];
-                foreach (var building in buildingWindowData.Keys)
+                foreach (var building in tempstate.Keys)
                 {
-                    if (tempstate.ContainsKey(building))
+                    if (ints.Contains(building.ToCharArray()[0].ToString()))
                     {
-                        tempstate[building] = buildingWindowData[building];
-                    }
-                    else
-                    {
-                        tempstate.Add(building, buildingWindowData[building]);
+                        if (!buildingWindowData.ContainsKey(building))
+                        {
+                            buildingWindowData.Add(building, tempstate[building]);
+                        }
+                        
                     }
                 }
-                stateInfo["buildings"] = tempstate;
+                stateInfo["buildings"] = buildingWindowData;
             }
             if (stateInfo.ContainsKey("resources"))
             {
