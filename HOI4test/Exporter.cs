@@ -28,18 +28,44 @@ namespace HOI4test
         public void ExportStratRegions(Dictionary<string, List<string>> provinces, Dictionary<string, List<string>> data)
         {
             Directory.CreateDirectory(starter.outputfolder + "/strategicregions");
+            int remove_line = 0;
             foreach(var i in data.Keys)
             {
                 for (var k = 0; k < data[i].Count; k++)
                 {
                     if (data[i][k].Trim().StartsWith("provinces"))
                     {
-                        data[i].Insert(k + 1, "      " + string.Join(" ", provinces[i]));
+                        data[i].Insert(k + 1, "      " + JoinedProvinces(provinces[i]));
+                        //data[i].Insert(k + 1, "      " + string.Join(" ", provinces[i]));
+                        //data[i][k + 2] = "";
+                        remove_line = k + 1;
                     }
                 }
 
                 saveFile("strategicregions/" + i + ".txt", data[i]);
+                if (remove_line != 0)
+                {
+                    data[i].RemoveAt(remove_line);
+                }
+                
             }
+        }
+
+        private string JoinedProvinces(List<string> provinces)
+        {
+            string return_string = "";
+            var templist = new List<string>();
+            for (var i = 0; i < provinces.Count; i++)
+            {
+                return_string += " ";
+                if (!templist.Contains(provinces[i]))
+                {
+                    return_string += provinces[i];
+                    templist.Add(provinces[i]);
+                }
+                
+            }
+            return return_string;
         }
         
         public void ExportStateData(Dictionary<int, Dictionary<string, Object>> stateDict)

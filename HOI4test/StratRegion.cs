@@ -22,6 +22,7 @@ namespace HOI4test
         public void transferProvince(string province, string targetprovince)
         {
             // This does not stop the FRACTURED STRATEGIC ZONE warning we all love.
+            // Keep this in mind when making funny enclaves
             foreach (var entry in stratProvinces.Keys)
             {
                 if (stratProvinces[entry].Contains(province))

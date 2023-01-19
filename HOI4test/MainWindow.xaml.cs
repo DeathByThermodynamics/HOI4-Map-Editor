@@ -538,8 +538,9 @@ namespace HOI4test
             //var next = Saver.saveData(states.getStates());
             //MessageBox.Show(next.ToString() + "states saved");
             //string[] returnstring = next.ToArray();
-            var whatever = new Exporter();
-            whatever.ExportStateData(states.getStates());
+            var exporter = new Exporter();
+            exporter.ExportStateData(states.getStates());
+            exporter.ExportStratRegions(stratRegions.stratProvinces, stratRegions.stratData);
 
 
         }
