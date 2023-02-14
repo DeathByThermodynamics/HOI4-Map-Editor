@@ -64,6 +64,10 @@ def getStates(directory, stateDictionary=None):
                         stateInfo["provinces"] += f.readline().strip().strip('\\t}').strip('\t').split(" ")
                     if '\\t}' in stateInfo["provinces"]:
                         stateInfo["provinces"].remove('\\t}')
+                    if '}' in stateInfo["provinces"]:
+                        stateInfo["provinces"].remove('}')
+                    if '' in stateInfo["provinces"]:
+                        stateInfo["provinces"].remove('')
                 elif line.startswith("manpower"):
                     stateInfo["manpower"] = parseequalsafter(line)
                 elif line.startswith("history"):
