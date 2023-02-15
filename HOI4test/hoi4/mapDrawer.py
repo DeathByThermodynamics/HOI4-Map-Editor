@@ -270,7 +270,7 @@ def redrawprovince(directory, id, colour):
 
 
 def redrawprovinceincache(directory, id, colour):
-    raw_img = Image.open(directory + "/provinces/" + str(id) + ".png")
+    raw_img = Image.open(directory + "/mapEditor/provinces/" + str(id) + ".png")
     img = np.array(raw_img)
     width, height = raw_img.size
     for i in range(width):

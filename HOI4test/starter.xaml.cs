@@ -60,6 +60,7 @@ namespace HOI4test
         {
             hoi4folder = Inputs.Text;
             ProcessStartInfo start = new ProcessStartInfo();
+            System.Console.WriteLine(starter.programfolder);
             start.FileName = starter.programfolder + "/dist/main/main.exe";
             start.Arguments = string.Format(" {0}", hoi4folder);
             start.UseShellExecute = false;
